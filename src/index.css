@@ -1,0 +1,272 @@
+@charset "UTF-8";
+
+:root {
+  /* Colors requested by user + Lain Cyberpunk palette */
+  --bg-dark: #0f0718;
+  --bg-card: #190c2b;
+  --bg-card-hover: #261242;
+  
+  --purple-main: #7b2cbf;
+  --purple-neon: #9d4edd;
+  --purple-dark: #3c096c;
+  --purple-glow: rgba(157, 78, 221, 0.4);
+  
+  --green-neon: #00ff66;
+  --green-dark: #008837;
+  --green-glow: rgba(0, 255, 102, 0.35);
+
+  --yellow-cyber: #ffe600;
+  --yellow-glow: rgba(255, 230, 0, 0.35);
+
+  --orange-cyber: #ff6600;
+  --orange-glow: rgba(255, 102, 0, 0.35);
+
+  --cyan-wired: #00e5ff;
+  --text-main: #f1e9ff;
+  --text-muted: #bda6df;
+
+  /* Typography */
+  --font-serif: 'Times New Roman', Times, serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: var(--font-serif);
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(123, 44, 191, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(0, 255, 102, 0.12) 0%, transparent 40%),
+    linear-gradient(rgba(15, 7, 24, 0.95), rgba(15, 7, 24, 0.95)),
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(157, 78, 221, 0.05) 2px, rgba(157, 78, 221, 0.05) 4px);
+  background-attachment: fixed;
+}
+
+/* Scrollbar retro */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+  border-left: 1px solid var(--purple-main);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--purple-main);
+  border-radius: 0px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--green-neon);
+}
+
+/* Lain Cyber UI Containers */
+.navi-border {
+  border: 1px solid var(--purple-neon);
+  box-shadow: 0 0 12px var(--purple-glow), inset 0 0 8px rgba(123, 44, 191, 0.2);
+}
+
+.navi-border-green {
+  border: 1px solid var(--green-neon);
+  box-shadow: 0 0 12px var(--green-glow);
+}
+
+.navi-border-yellow {
+  border: 1px solid var(--yellow-cyber);
+  box-shadow: 0 0 12px var(--yellow-glow);
+}
+
+.navi-border-orange {
+  border: 1px solid var(--orange-cyber);
+  box-shadow: 0 0 12px var(--orange-glow);
+}
+
+.navi-card {
+  background: var(--bg-card);
+  border: 1px solid var(--purple-main);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.navi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--purple-neon), var(--green-neon), var(--yellow-cyber), var(--orange-cyber));
+}
+
+.navi-card:hover {
+  border-color: var(--green-neon);
+  box-shadow: 0 4px 20px rgba(0, 255, 102, 0.15);
+}
+
+/* Lain Wireframe Corner Decoration */
+.corner-decor {
+  position: relative;
+}
+.corner-decor::after {
+  content: '+';
+  position: absolute;
+  top: 2px;
+  right: 6px;
+  color: var(--green-neon);
+  font-size: 14px;
+  font-family: monospace;
+}
+
+/* Typography styles */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  letter-spacing: 0.5px;
+}
+
+.text-purple { color: var(--purple-neon); }
+.text-green { color: var(--green-neon); }
+.text-yellow { color: var(--yellow-cyber); }
+.text-orange { color: var(--orange-cyber); }
+.text-cyan { color: var(--cyan-wired); }
+
+/* Buttons Lain Style */
+.btn-navi {
+  font-family: var(--font-serif);
+  background: var(--purple-dark);
+  color: var(--text-main);
+  border: 1px solid var(--purple-neon);
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  position: relative;
+}
+
+.btn-navi:hover {
+  background: var(--purple-main);
+  color: #ffffff;
+  box-shadow: 0 0 15px var(--purple-glow);
+  transform: translateY(-1px);
+}
+
+.btn-navi-green {
+  background: rgba(0, 255, 102, 0.1);
+  color: var(--green-neon);
+  border: 1px solid var(--green-neon);
+}
+.btn-navi-green:hover {
+  background: var(--green-neon);
+  color: #000000;
+  box-shadow: 0 0 18px var(--green-glow);
+}
+
+.btn-navi-yellow {
+  background: rgba(255, 230, 0, 0.1);
+  color: var(--yellow-cyber);
+  border: 1px solid var(--yellow-cyber);
+}
+.btn-navi-yellow:hover {
+  background: var(--yellow-cyber);
+  color: #000000;
+  box-shadow: 0 0 18px var(--yellow-glow);
+}
+
+.btn-navi-orange {
+  background: rgba(255, 102, 0, 0.1);
+  color: var(--orange-cyber);
+  border: 1px solid var(--orange-cyber);
+}
+.btn-navi-orange:hover {
+  background: var(--orange-cyber);
+  color: #ffffff;
+  box-shadow: 0 0 18px var(--orange-glow);
+}
+
+/* Forms & Inputs */
+input, select, textarea {
+  font-family: var(--font-serif);
+  background: #120721;
+  border: 1px solid var(--purple-main);
+  color: var(--text-main);
+  padding: 8px 12px;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--green-neon);
+  box-shadow: 0 0 10px var(--green-glow);
+}
+
+label {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* Grid & Layout Utilities */
+.grid-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.grid-table th {
+  background: #250f3e;
+  color: var(--yellow-cyber);
+  border: 1px solid var(--purple-main);
+  padding: 10px;
+  font-weight: bold;
+  text-align: left;
+  font-size: 14px;
+}
+
+.grid-table td {
+  border: 1px solid rgba(123, 44, 191, 0.3);
+  padding: 8px 10px;
+  background: rgba(25, 12, 43, 0.6);
+  font-size: 14px;
+}
+
+.grid-table tr:hover td {
+  background: rgba(157, 78, 221, 0.15);
+}
+
+/* Lain Wired Status Pulse */
+@keyframes pulse-wired {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
+}
+
+.wired-pulse {
+  animation: pulse-wired 2s infinite ease-in-out;
+}
+
+/* Badges */
+.badge-navi {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 12px;
+  border-radius: 2px;
+  font-weight: bold;
+  border: 1px solid currentColor;
+}
