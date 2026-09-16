@@ -6,11 +6,11 @@ export default function MorphoModule({ records, setRecords }) {
   const [maxCapacity, setMaxCapacity] = useState(1000);
   const [batchCount, setBatchCount] = useState(100);
 
-  // New Record Form State
-  const [plantId, setPlantId] = useState('');
-  const [height, setHeight] = useState('');
-  const [diameter, setDiameter] = useState('');
+  // Form State: 3 specific fields requested
   const [leaves, setLeaves] = useState('');
+  const [diameter, setDiameter] = useState('');
+  const [length, setLength] = useState('');
+  const [plantId, setPlantId] = useState('');
   const [notes, setNotes] = useState('');
 
   // Pagination & Filtering
@@ -25,8 +25,8 @@ export default function MorphoModule({ records, setRecords }) {
       alert(`Has alcanzado el límite máximo configurado de ${maxCapacity} muestras.`);
       return;
     }
-    if (!height || !diameter || !leaves) {
-      alert('Por favor completa Altura, Diámetro y Número de Hojas.');
+    if (!leaves || !diameter || !length) {
+      alert('Por favor completa Número de hojas, Diámetro de la planta y Largo de la planta.');
       return;
     }
 
@@ -35,9 +35,9 @@ export default function MorphoModule({ records, setRecords }) {
       id: `m-${Date.now()}-${Math.random()}`,
       sampleNo: nextNo,
       plantId: plantId || `PLT-${String(nextNo).padStart(4, '0')}`,
-      height: parseFloat(height).toFixed(1),
-      diameter: parseFloat(diameter).toFixed(2),
       leaves: parseInt(leaves, 10),
+      diameter: parseFloat(diameter).toFixed(2),
+      height: parseFloat(length).toFixed(1), // Length / Largo stored in height property for compatibility
       date: new Date().toISOString().split('T')[0],
       notes: notes || 'Entrada manual'
     };
@@ -45,10 +45,10 @@ export default function MorphoModule({ records, setRecords }) {
     setRecords([newRec, ...records]);
 
     // Reset form
-    setPlantId('');
-    setHeight('');
-    setDiameter('');
     setLeaves('');
+    setDiameter('');
+    setLength('');
+    setPlantId('');
     setNotes('');
   };
 
@@ -68,9 +68,9 @@ export default function MorphoModule({ records, setRecords }) {
         id: `m-batch-${Date.now()}-${i}`,
         sampleNo: idx,
         plantId: `PLT-${String(idx).padStart(4, '0')}`,
-        height: (20 + Math.random() * 45).toFixed(1),
-        diameter: (2.5 + Math.random() * 6).toFixed(2),
         leaves: Math.floor(6 + Math.random() * 12),
+        diameter: (2.5 + Math.random() * 6).toFixed(2),
+        height: (20 + Math.random() * 45).toFixed(1),
         date: new Date().toISOString().split('T')[0],
         notes: 'Generación por Lote de Campo'
       });
@@ -111,7 +111,7 @@ export default function MorphoModule({ records, setRecords }) {
 
   // Statistical summary
   const stats = useMemo(() => {
-    if (records.length === 0) return { avgH: '0.0', avgD: '0.00', avgL: '0.0', minH: '0.0', maxH: '0.0' };
+    if (records.length === 0) return { avgH: '0.0', avgD: '0.00', avgL: '0.0' };
     const heights = records.map(r => Number(r.height));
     const diameters = records.map(r => Number(r.diameter));
     const leavesList = records.map(r => Number(r.leaves));
@@ -123,16 +123,14 @@ export default function MorphoModule({ records, setRecords }) {
     return {
       avgH: (sumH / records.length).toFixed(1),
       avgD: (sumD / records.length).toFixed(2),
-      avgL: (sumL / records.length).toFixed(1),
-      minH: Math.min(...heights).toFixed(1),
-      maxH: Math.max(...heights).toFixed(1)
+      avgL: (sumL / records.length).toFixed(1)
     };
   }, [records]);
 
   const progressPct = maxCapacity > 0 ? ((records.length / maxCapacity) * 100).toFixed(1) : '0.0';
 
   return (
-    <div className="space-y-6 window-slide-right">
+    <div className="space-y-6 window-slide-right font-serif">
       {/* Upper Panel Window Stack: Capacity & Batch Generator */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Window 1: Capacidad Máxima */}
@@ -209,18 +207,15 @@ export default function MorphoModule({ records, setRecords }) {
                 <Trash2 className="w-4 h-4" /> VACIAR TABLA
               </button>
             </div>
-            <p className="text-xs text-purple-300 mt-2 font-mono">
-              Generador automático por lote para pruebas de rendimiento y exportación a Excel.
-            </p>
           </div>
         </div>
       </div>
 
-      {/* Primary Lower Window: Form Input Window */}
+      {/* Primary Lower Window: Form Input Window (3 Requested Fields) */}
       <div className="navi-window">
         <div className="navi-window-header">
           <span className="font-mono text-xs text-yellow-400 flex items-center gap-1.5">
-            <PlusCircle className="w-3.5 h-3.5 text-green-400" /> FORM_NEW_MORPHO_ENTRY.EXE
+            <PlusCircle className="w-3.5 h-3.5 text-green-400" /> MORPHOLOGY_INPUT_FORM.EXE
           </span>
           <div className="navi-window-controls">
             <div className="navi-win-btn">_</div>
@@ -231,49 +226,12 @@ export default function MorphoModule({ records, setRecords }) {
 
         <div className="p-5">
           <h2 className="text-xl font-bold text-yellow-400 mb-4 border-b border-purple-800 pb-2 flex items-center gap-2">
-            <Leaf className="w-5 h-5 text-green-400" /> REGISTRAR NUEVA MUESTRA MORFOLÓGICA
+            <Leaf className="w-5 h-5 text-green-400" /> SUBMENÚ: PARÁMETROS MORFOLÓGICOS DE LA PLANTA
           </h2>
 
-          <form onSubmit={handleAddRecord} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+          <form onSubmit={handleAddRecord} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <div>
-              <label>ID Planta / Código: PLT-0016</label>
-              <input 
-                type="text" 
-                placeholder="PLT-0016"
-                value={plantId}
-                onChange={(e) => setPlantId(e.target.value)}
-                className="w-full font-mono"
-              />
-            </div>
-
-            <div>
-              <label className="text-green-400 font-bold">Altura Planta (cm) * Ej. 42.5</label>
-              <input 
-                type="number" 
-                step="0.1" 
-                placeholder="Ej. 42.5"
-                value={height}
-                onChange={(e) => setHeight(e.target.value)}
-                className="w-full font-bold"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="text-yellow-400 font-bold">Diámetro Basal (mm) * Ej. 5.80</label>
-              <input 
-                type="number" 
-                step="0.01" 
-                placeholder="Ej. 5.80"
-                value={diameter}
-                onChange={(e) => setDiameter(e.target.value)}
-                className="w-full font-bold"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="text-orange-400 font-bold">Número de Hojas * Ej. 12</label>
+              <label className="text-orange-400 font-bold">1. Número de hojas *</label>
               <input 
                 type="number" 
                 placeholder="Ej. 12"
@@ -284,12 +242,38 @@ export default function MorphoModule({ records, setRecords }) {
               />
             </div>
 
-            <div className="sm:col-span-2 md:col-span-1 flex items-end">
+            <div>
+              <label className="text-yellow-400 font-bold">2. Diámetro de la planta (cm) *</label>
+              <input 
+                type="number" 
+                step="0.01" 
+                placeholder="Ej. 5.8"
+                value={diameter}
+                onChange={(e) => setDiameter(e.target.value)}
+                className="w-full font-bold"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="text-green-400 font-bold">3. Largo de la planta (cm) *</label>
+              <input 
+                type="number" 
+                step="0.1" 
+                placeholder="Ej. 42.5"
+                value={length}
+                onChange={(e) => setLength(e.target.value)}
+                className="w-full font-bold"
+                required
+              />
+            </div>
+
+            <div className="flex items-end">
               <button 
                 type="submit" 
                 className="btn-navi btn-navi-green w-full justify-center h-[40px]"
               >
-                <PlusCircle className="w-4 h-4" /> GUARDAR DATO
+                <PlusCircle className="w-4 h-4" /> REGISTRAR DATOS
               </button>
             </div>
           </form>
@@ -297,25 +281,24 @@ export default function MorphoModule({ records, setRecords }) {
       </div>
 
       {/* Summary Statistics Panel */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono">
         <div className="bg-purple-950/80 p-3 border border-purple-700 rounded text-center">
-          <span className="text-xs text-purple-300 block font-mono">ALTURA PROMEDIO</span>
-          <span className="text-xl font-bold text-green-400">{stats.avgH} cm</span>
-          <span className="text-[10px] text-gray-400 block font-mono">Min: {stats.minH} / Máx: {stats.maxH}</span>
-        </div>
-
-        <div className="bg-purple-950/80 p-3 border border-purple-700 rounded text-center">
-          <span className="text-xs text-purple-300 block font-mono">DIÁMETRO BASAL PROM.</span>
-          <span className="text-xl font-bold text-yellow-400">{stats.avgD} mm</span>
-        </div>
-
-        <div className="bg-purple-950/80 p-3 border border-purple-700 rounded text-center">
-          <span className="text-xs text-purple-300 block font-mono">HOJAS PROMEDIO</span>
+          <span className="text-xs text-purple-300 block">HOJAS PROMEDIO</span>
           <span className="text-xl font-bold text-orange-400">{stats.avgL} hojas</span>
         </div>
 
         <div className="bg-purple-950/80 p-3 border border-purple-700 rounded text-center">
-          <span className="text-xs text-purple-300 block font-mono">TOTAL MUESTRAS</span>
+          <span className="text-xs text-purple-300 block">DIÁMETRO PROM. (CM)</span>
+          <span className="text-xl font-bold text-yellow-400">{stats.avgD} cm</span>
+        </div>
+
+        <div className="bg-purple-950/80 p-3 border border-purple-700 rounded text-center">
+          <span className="text-xs text-purple-300 block">LARGO PROM. (CM)</span>
+          <span className="text-xl font-bold text-green-400">{stats.avgH} cm</span>
+        </div>
+
+        <div className="bg-purple-950/80 p-3 border border-purple-700 rounded text-center">
+          <span className="text-xs text-purple-300 block">TOTAL MUESTRAS</span>
           <span className="text-xl font-bold text-cyan-400">{records.length}</span>
         </div>
       </div>
@@ -336,17 +319,17 @@ export default function MorphoModule({ records, setRecords }) {
         <div className="p-4">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
             <h3 className="text-md font-bold text-yellow-400 flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-green-400" /> MATRIZ DE PARÁMETROS MORFOLÓGICOS ({records.length})
+              <BarChart3 className="w-4 h-4 text-green-400" /> MATRIZ DE DATOS MORFOLÓGICOS ({records.length})
             </h3>
 
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <div className="relative w-full sm:w-64">
                 <input 
                   type="text" 
-                  placeholder="Buscar por ID o nota..."
+                  placeholder="Buscar muestra..."
                   value={searchTerm}
                   onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-                  className="w-full pl-8 py-1 text-sm"
+                  className="w-full pl-8 py-1 text-sm font-mono"
                 />
                 <Search className="w-4 h-4 text-purple-400 absolute left-2 top-2" />
               </div>
@@ -359,11 +342,10 @@ export default function MorphoModule({ records, setRecords }) {
                 <tr>
                   <th>N°</th>
                   <th>ID Planta</th>
-                  <th>Altura (cm)</th>
-                  <th>Diámetro Basal (mm)</th>
-                  <th>N° Hojas</th>
+                  <th>Número de Hojas</th>
+                  <th>Diámetro Planta (cm)</th>
+                  <th>Largo Planta (cm)</th>
                   <th>Fecha</th>
-                  <th>Notas</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -373,11 +355,10 @@ export default function MorphoModule({ records, setRecords }) {
                     <tr key={r.id}>
                       <td className="font-bold text-yellow-300">#{r.sampleNo}</td>
                       <td className="font-mono text-cyan-300">{r.plantId}</td>
+                      <td className="font-bold text-orange-400">{r.leaves} hojas</td>
+                      <td className="font-bold text-yellow-400">{r.diameter} cm</td>
                       <td className="font-bold text-green-400">{r.height} cm</td>
-                      <td className="font-bold text-yellow-400">{r.diameter} mm</td>
-                      <td className="font-bold text-orange-400">{r.leaves}</td>
-                      <td className="text-gray-300 text-xs">{r.date}</td>
-                      <td className="text-gray-400 text-xs max-w-xs truncate">{r.notes}</td>
+                      <td className="text-gray-300 text-xs font-mono">{r.date}</td>
                       <td>
                         <button 
                           onClick={() => handleDeleteRecord(r.id)} 
@@ -391,7 +372,7 @@ export default function MorphoModule({ records, setRecords }) {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="8" className="text-center py-6 text-purple-300 font-mono">
+                    <td colSpan="7" className="text-center py-6 text-purple-300 font-mono">
                       No hay muestras registradas en el sistema.
                     </td>
                   </tr>
