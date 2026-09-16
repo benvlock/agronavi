@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import HeaderNavi from './components/HeaderNavi';
+import SidebarNavi from './components/SidebarNavi';
 import MorphoModule from './components/MorphoModule';
 import FungalModule from './components/FungalModule';
 import ClimateSanityModule from './components/ClimateSanityModule';
@@ -68,10 +69,8 @@ export default function App() {
       {/* Subtle CRT Scanlines Effect Overlay */}
       <div className="crt-overlay" />
 
-      {/* Lain OS Header Stack */}
+      {/* Header Bar */}
       <HeaderNavi 
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab}
         onOpenExport={() => setShowExportModal(true)}
         onOpenSupabase={() => setShowSupabaseModal(true)}
         onOpenGuide={() => setShowGuideModal(true)}
@@ -79,22 +78,36 @@ export default function App() {
         morphoCount={morphoRecords.length}
       />
 
-      {/* Main Content Window Stack */}
-      <main className="max-w-7xl w-full mx-auto px-4 mt-2 flex-grow">
-        {activeTab === 'morpho' && (
-          <MorphoModule records={morphoRecords} setRecords={setMorphoRecords} />
-        )}
+      {/* Main App Container: Left Sidebar Picker + Active Module Window */}
+      <div className="max-w-7xl w-full mx-auto px-4 mt-2 flex-grow flex flex-col md:flex-row gap-6 items-start">
+        {/* Left Sidebar Module Picker */}
+        <SidebarNavi 
+          activeTab={activeTab} 
+          setActiveTab={setActiveTab}
+          onOpenExport={() => setShowExportModal(true)}
+          onOpenSupabase={() => setShowSupabaseModal(true)}
+          onOpenGuide={() => setShowGuideModal(true)}
+          isSupabaseConnected={isConnected}
+          morphoCount={morphoRecords.length}
+        />
 
-        {activeTab === 'fungal' && (
-          <FungalModule records={fungalRecords} setRecords={setFungalRecords} />
-        )}
+        {/* Right Active Module View */}
+        <main className="w-full flex-grow min-w-0">
+          {activeTab === 'morpho' && (
+            <MorphoModule records={morphoRecords} setRecords={setMorphoRecords} />
+          )}
 
-        {activeTab === 'climate' && (
-          <ClimateSanityModule records={climateRecords} setRecords={setClimateRecords} />
-        )}
-      </main>
+          {activeTab === 'fungal' && (
+            <FungalModule records={fungalRecords} setRecords={setFungalRecords} />
+          )}
 
-      {/* Lain Wired Footer & TachibanaLab Enterprise Signature */}
+          {activeTab === 'climate' && (
+            <ClimateSanityModule records={climateRecords} setRecords={setClimateRecords} />
+          )}
+        </main>
+      </div>
+
+      {/* Lain Wired Footer & TachibanaLab Signature */}
       <footer className="mt-12 border-t border-purple-900/80 bg-[#120721]/90 py-6 px-4 text-center font-serif">
         <div className="max-w-7xl mx-auto flex flex-col items-center gap-3">
           <div className="flex flex-col sm:flex-row justify-between items-center w-full text-xs text-purple-400 font-mono">
@@ -103,7 +116,6 @@ export default function App() {
             <span className="text-green-400">ESTADO: ONLINE</span>
           </div>
 
-          {/* Prompt requested signature */}
           <div className="mt-2 tachibana-signature">
             an OS Enterprise Product By TachibanaLab
           </div>

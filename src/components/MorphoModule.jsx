@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { PlusCircle, Zap, Trash2, Search, BarChart3, ChevronLeft, ChevronRight, Leaf } from 'lucide-react';
+import { PlusCircle, Zap, Trash2, Search, BarChart3, ChevronLeft, ChevronRight, Leaf, Target } from 'lucide-react';
 
 export default function MorphoModule({ records, setRecords }) {
   // Config state
@@ -134,12 +134,12 @@ export default function MorphoModule({ records, setRecords }) {
   return (
     <div className="space-y-6">
       {/* Upper Panel Window Stack: Capacity & Batch Generator */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Window 1: Capacidad Máxima */}
         <div className="navi-window">
           <div className="navi-window-header">
-            <span className="font-mono text-xs text-yellow-300 flex items-center gap-1">
-              <Leaf className="w-3.5 h-3.5 text-green-400" /> CAPACITY_SETTINGS.SYS
+            <span className="font-mono text-xs text-yellow-300 flex items-center gap-1.5">
+              <Target className="w-3.5 h-3.5 text-green-400" /> CAPACITY_SETTINGS.SYS
             </span>
             <div className="navi-window-controls">
               <div className="navi-win-btn">_</div>
@@ -148,8 +148,8 @@ export default function MorphoModule({ records, setRecords }) {
             </div>
           </div>
           <div className="p-4">
-            <label className="text-yellow-400 font-bold mb-1 block">
-              🎯 CAPACIDAD MÁXIMA DE MUESTRAS
+            <label className="text-yellow-400 font-bold mb-1 block flex items-center gap-1.5">
+              <Target className="w-4 h-4 text-green-400" /> CAPACIDAD MÁXIMA DE MUESTRAS
             </label>
             <select 
               value={maxCapacity} 
@@ -170,9 +170,9 @@ export default function MorphoModule({ records, setRecords }) {
         </div>
 
         {/* Window 2: Entrada Rápida de Muestras */}
-        <div className="navi-window md:col-span-2">
+        <div className="navi-window lg:col-span-2">
           <div className="navi-window-header">
-            <span className="font-mono text-xs text-green-400 flex items-center gap-1">
+            <span className="font-mono text-xs text-green-400 flex items-center gap-1.5">
               <Zap className="w-3.5 h-3.5 text-yellow-400" /> BATCH_GENERATOR_MATRIX.DAT
             </span>
             <div className="navi-window-controls">
@@ -182,7 +182,7 @@ export default function MorphoModule({ records, setRecords }) {
             </div>
           </div>
           <div className="p-4">
-            <label className="text-green-400 font-bold mb-2 block flex items-center gap-1">
+            <label className="text-green-400 font-bold mb-2 block flex items-center gap-1.5">
               <Zap className="w-4 h-4 text-yellow-400" /> ENTRADA RÁPIDA DE MUESTRAS POR LOTE
             </label>
             <div className="flex flex-wrap items-center gap-3">
@@ -210,7 +210,7 @@ export default function MorphoModule({ records, setRecords }) {
               </button>
             </div>
             <p className="text-xs text-purple-300 mt-2 font-mono">
-              Simulador masivo rápido de muestras para pruebas estresadas de rendimiento y exportación Excel.
+              Generador automático por lote para pruebas de rendimiento y exportación a Excel.
             </p>
           </div>
         </div>
@@ -219,7 +219,7 @@ export default function MorphoModule({ records, setRecords }) {
       {/* Primary Lower Window: Form Input Window */}
       <div className="navi-window">
         <div className="navi-window-header">
-          <span className="font-mono text-xs text-yellow-400 flex items-center gap-1">
+          <span className="font-mono text-xs text-yellow-400 flex items-center gap-1.5">
             <PlusCircle className="w-3.5 h-3.5 text-green-400" /> FORM_NEW_MORPHO_ENTRY.EXE
           </span>
           <div className="navi-window-controls">
@@ -230,8 +230,8 @@ export default function MorphoModule({ records, setRecords }) {
         </div>
 
         <div className="p-5">
-          <h2 className="text-xl font-bold text-yellow-400 mb-4 border-b border-purple-800 pb-2">
-            REGISTRAR NUEVA MUESTRA MORFOLÓGICA
+          <h2 className="text-xl font-bold text-yellow-400 mb-4 border-b border-purple-800 pb-2 flex items-center gap-2">
+            <Leaf className="w-5 h-5 text-green-400" /> REGISTRAR NUEVA MUESTRA MORFOLÓGICA
           </h2>
 
           <form onSubmit={handleAddRecord} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
@@ -323,7 +323,7 @@ export default function MorphoModule({ records, setRecords }) {
       {/* Matrix Table Window */}
       <div className="navi-window">
         <div className="navi-window-header">
-          <span className="font-mono text-xs text-cyan-400 flex items-center gap-1">
+          <span className="font-mono text-xs text-cyan-400 flex items-center gap-1.5">
             <BarChart3 className="w-3.5 h-3.5 text-yellow-400" /> DATA_MATRIX_VIEW.GRID
           </span>
           <div className="navi-window-controls">
@@ -391,7 +391,7 @@ export default function MorphoModule({ records, setRecords }) {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="8" className="text-center py-6 text-purple-300">
+                    <td colSpan="8" className="text-center py-6 text-purple-300 font-mono">
                       No hay muestras registradas o no coinciden con la búsqueda.
                     </td>
                   </tr>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Database, FileSpreadsheet, HelpCircle, Activity, Cpu } from 'lucide-react';
 
-export default function HeaderNavi({ activeTab, setActiveTab, onOpenExport, onOpenSupabase, onOpenGuide, isSupabaseConnected, morphoCount }) {
+export default function HeaderNavi({ onOpenExport, onOpenSupabase, onOpenGuide, isSupabaseConnected, morphoCount }) {
   const [time, setTime] = useState('');
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export default function HeaderNavi({ activeTab, setActiveTab, onOpenExport, onOp
                 <h1 className="text-2xl font-bold text-yellow-400 tracking-wider">
                   AGRONAVI // CYBERIA
                 </h1>
-                <span className="text-xs bg-purple-900 text-green-300 border border-green-500 px-2 py-0.5">
+                <span className="text-xs bg-purple-900 text-green-300 border border-green-500 px-2 py-0.5 font-mono">
                   V3.6 NAVI
                 </span>
               </div>
@@ -55,8 +55,8 @@ export default function HeaderNavi({ activeTab, setActiveTab, onOpenExport, onOp
           <div className="flex items-center gap-4 text-xs font-mono bg-purple-950/80 p-2.5 border border-purple-700 rounded">
             <div className="flex items-center gap-1.5">
               <Activity className="w-4 h-4 text-green-400" />
-              <span className="text-gray-300">MUESTRAS:</span>
-              <span className="text-yellow-400 font-bold">{morphoCount}</span>
+              <span className="text-gray-300">MUESTRAS BD:</span>
+              <span className="text-yellow-400 font-bold">{morphoCount} / 9000</span>
             </div>
             <div className="h-4 w-px bg-purple-700" />
             <div className="flex items-center gap-1.5">
@@ -77,7 +77,7 @@ export default function HeaderNavi({ activeTab, setActiveTab, onOpenExport, onOp
             </div>
           </div>
 
-          {/* Top Action Buttons (Green, Gold, Orange) */}
+          {/* Quick Bar Buttons */}
           <div className="flex items-center gap-2">
             <button 
               onClick={onOpenExport} 
@@ -103,30 +103,6 @@ export default function HeaderNavi({ activeTab, setActiveTab, onOpenExport, onOp
               <HelpCircle className="w-4 h-4" /> GUÍA APPS
             </button>
           </div>
-        </div>
-
-        {/* Module Navigation Tabs */}
-        <div className="mt-4 pt-3 border-t border-purple-800/60 flex flex-wrap gap-2">
-          <button
-            onClick={() => setActiveTab('morpho')}
-            className={`btn-navi text-sm ${activeTab === 'morpho' ? 'bg-purple-700 text-white border-green-400 shadow-lg' : 'opacity-80'}`}
-          >
-            🌱 PARÁMETROS MORFOLÓGICOS
-          </button>
-
-          <button
-            onClick={() => setActiveTab('fungal')}
-            className={`btn-navi text-sm ${activeTab === 'fungal' ? 'bg-purple-700 text-white border-green-400 shadow-lg' : 'opacity-80'}`}
-          >
-            🍄 MICORRIZAS Y TRICHODERMA (%)
-          </button>
-
-          <button
-            onClick={() => setActiveTab('climate')}
-            className={`btn-navi text-sm ${activeTab === 'climate' ? 'bg-purple-700 text-white border-green-400 shadow-lg' : 'opacity-80'}`}
-          >
-            🌧️ CLIMA Y ENFERMEDADES FOLIARES
-          </button>
         </div>
       </div>
     </header>
