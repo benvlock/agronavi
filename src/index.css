@@ -1,4 +1,5 @@
 @charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap');
 
 :root {
   /* Colors requested by user + Lain Cyberpunk palette */
@@ -26,8 +27,8 @@
   --text-main: #f4eeff;
   --text-muted: #c2acdf;
 
-  /* Typography requested by user: Comic Sans */
-  --font-main: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+  /* Typography requested by user: LoveLetterTypewriter */
+  --font-main: 'LoveLetterTypewriter', 'Love Letter Typewriter', 'Special Elite', 'Courier Prime', 'Courier New', monospace;
 }
 
 * {
