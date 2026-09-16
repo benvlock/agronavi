@@ -64,8 +64,11 @@ export default function App() {
   }, [climateRecords]);
 
   return (
-    <div className="min-h-screen pb-12 flex flex-col">
-      {/* Lain OS Header */}
+    <div className="min-h-screen pb-12 flex flex-col relative">
+      {/* Subtle CRT Scanlines Effect Overlay */}
+      <div className="crt-overlay" />
+
+      {/* Lain OS Header Stack */}
       <HeaderNavi 
         activeTab={activeTab} 
         setActiveTab={setActiveTab}
@@ -76,8 +79,8 @@ export default function App() {
         morphoCount={morphoRecords.length}
       />
 
-      {/* Main Content Area */}
-      <main className="max-w-7xl w-full mx-auto px-4 mt-6 flex-grow">
+      {/* Main Content Window Stack */}
+      <main className="max-w-7xl w-full mx-auto px-4 mt-2 flex-grow">
         {activeTab === 'morpho' && (
           <MorphoModule records={morphoRecords} setRecords={setMorphoRecords} />
         )}
@@ -91,12 +94,19 @@ export default function App() {
         )}
       </main>
 
-      {/* Lain Wired Footer */}
-      <footer className="mt-12 border-t border-purple-900 bg-purple-950/80 py-4 px-4 text-center text-xs text-purple-400 font-mono">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
-          <span>AGRONAVI CYBERIA // SISTEMA DE CAPTURA Y EXPORTACIÓN AGRONÓMICA</span>
-          <span className="text-yellow-400">TIPOGRAFÍA: TIMES NEW ROMAN // PALETA: MORADO + VERDE + AMARILLO + NARANJA</span>
-          <span>ESTADO: LOCALHOST PRUEBA OK</span>
+      {/* Lain Wired Footer & TachibanaLab Enterprise Signature */}
+      <footer className="mt-12 border-t border-purple-900/80 bg-[#120721]/90 py-6 px-4 text-center font-serif">
+        <div className="max-w-7xl mx-auto flex flex-col items-center gap-3">
+          <div className="flex flex-col sm:flex-row justify-between items-center w-full text-xs text-purple-400 font-mono">
+            <span>AGRONAVI CYBERIA // SISTEMA DE CAPTURA Y EXPORTACIÓN AGRONÓMICA</span>
+            <span className="text-yellow-400">TIPOGRAFÍA: TIMES NEW ROMAN // MORADO + VERDE + AMARILLO + NARANJA</span>
+            <span className="text-green-400">ESTADO: ONLINE</span>
+          </div>
+
+          {/* Prompt requested signature */}
+          <div className="mt-2 tachibana-signature">
+            an OS Enterprise Product By TachibanaLab
+          </div>
         </div>
       </footer>
 
