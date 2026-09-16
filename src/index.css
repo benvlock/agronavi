@@ -27,7 +27,7 @@
   --text-main: #f4eeff;
   --text-muted: #c2acdf;
 
-  /* Typography requested by user: LoveLetterTypewriter */
+  /* Typography: LoveLetterTypewriter */
   --font-main: 'LoveLetterTypewriter', 'Love Letter Typewriter', 'Special Elite', 'Courier Prime', 'Courier New', monospace;
 }
 
@@ -66,11 +66,24 @@ body {
   background-size: 100% 3px, 6px 100%;
 }
 
+/* Horizontal Window Desktop Track */
+.horizontal-desktop-track {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 1rem;
+  align-items: flex-start;
+  scroll-behavior: smooth;
+  width: 100%;
+}
+
 /* Horizontal Window Slide to Right Animation */
 @keyframes windowSlideRight {
   0% {
     opacity: 0;
-    transform: translateX(-30px);
+    transform: translateX(-40px);
   }
   100% {
     opacity: 1;
@@ -82,15 +95,15 @@ body {
   animation: windowSlideRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Scrollbar retro */
+/* Scrollbar retro horizontal */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
   background: var(--bg-dark);
-  border-left: 1px solid var(--purple-main);
+  border: 1px solid var(--purple-main);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -111,6 +124,7 @@ body {
   overflow: hidden;
   border-radius: 2px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  flex-shrink: 0;
 }
 
 .navi-window:hover {

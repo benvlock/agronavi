@@ -16,7 +16,7 @@ export default function MorphoModule({ records, setRecords }) {
   // Pagination & Filtering
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 25;
+  const pageSize = 20;
 
   // Manual record submission
   const handleAddRecord = (e) => {
@@ -37,7 +37,7 @@ export default function MorphoModule({ records, setRecords }) {
       plantId: plantId || `PLT-${String(nextNo).padStart(4, '0')}`,
       leaves: parseInt(leaves, 10),
       diameter: parseFloat(diameter).toFixed(2),
-      height: parseFloat(length).toFixed(1), // Length / Largo stored in height property for compatibility
+      height: parseFloat(length).toFixed(1),
       date: new Date().toISOString().split('T')[0],
       notes: notes || 'Entrada manual'
     };
@@ -130,92 +130,12 @@ export default function MorphoModule({ records, setRecords }) {
   const progressPct = maxCapacity > 0 ? ((records.length / maxCapacity) * 100).toFixed(1) : '0.0';
 
   return (
-    <div className="space-y-6 window-slide-right font-serif">
-      {/* Upper Panel Window Stack: Capacity & Batch Generator */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Window 1: Capacidad Máxima */}
-        <div className="navi-window">
-          <div className="navi-window-header">
-            <span className="font-mono text-xs text-yellow-300 flex items-center gap-1.5">
-              <Target className="w-3.5 h-3.5 text-green-400" /> CAPACITY_SETTINGS.SYS
-            </span>
-            <div className="navi-window-controls">
-              <div className="navi-win-btn">_</div>
-              <div className="navi-win-btn">□</div>
-              <div className="navi-win-btn navi-win-btn-close">X</div>
-            </div>
-          </div>
-          <div className="p-4">
-            <label className="text-yellow-400 font-bold mb-1 block flex items-center gap-1.5">
-              <Target className="w-4 h-4 text-green-400" /> CAPACIDAD MÁXIMA DE MUESTRAS
-            </label>
-            <select 
-              value={maxCapacity} 
-              onChange={(e) => setMaxCapacity(Number(e.target.value))}
-              className="w-full text-base font-bold text-green-400 mb-2"
-            >
-              <option value={100}>100 Muestras</option>
-              <option value={500}>500 Muestras</option>
-              <option value={1000}>1,000 Muestras</option>
-              <option value={3000}>3,000 Muestras</option>
-              <option value={5000}>5,000 Muestras</option>
-              <option value={9000}>9,000 Muestras (Máximo Agronómico)</option>
-            </select>
-            <p className="text-xs text-purple-300 font-mono">
-              Progreso: <span className="text-yellow-300 font-bold">{records.length}</span> de <span className="text-green-400 font-bold">{maxCapacity}</span> capturadas ({progressPct}%)
-            </p>
-          </div>
-        </div>
-
-        {/* Window 2: Entrada Rápida de Muestras */}
-        <div className="navi-window lg:col-span-2">
-          <div className="navi-window-header">
-            <span className="font-mono text-xs text-green-400 flex items-center gap-1.5">
-              <Zap className="w-3.5 h-3.5 text-yellow-400" /> BATCH_GENERATOR_MATRIX.DAT
-            </span>
-            <div className="navi-window-controls">
-              <div className="navi-win-btn">_</div>
-              <div className="navi-win-btn">□</div>
-              <div className="navi-win-btn navi-win-btn-close">X</div>
-            </div>
-          </div>
-          <div className="p-4">
-            <label className="text-green-400 font-bold mb-2 block flex items-center gap-1.5">
-              <Zap className="w-4 h-4 text-yellow-400" /> ENTRADA RÁPIDA DE MUESTRAS POR LOTE
-            </label>
-            <div className="flex flex-wrap items-center gap-3">
-              <input 
-                type="number" 
-                min="1" 
-                max="9000" 
-                value={batchCount} 
-                onChange={(e) => setBatchCount(e.target.value)}
-                placeholder="100"
-                className="w-28 text-center font-bold"
-              />
-              <button 
-                onClick={handleGenerateBatch} 
-                className="btn-navi btn-navi-green text-sm"
-                disabled={records.length >= maxCapacity}
-              >
-                <Zap className="w-4 h-4" /> GENERAR {batchCount} REGISTROS
-              </button>
-              <button 
-                onClick={handleClearAll} 
-                className="btn-navi btn-navi-orange text-sm ml-auto"
-              >
-                <Trash2 className="w-4 h-4" /> VACIAR TABLA
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Primary Lower Window: Form Input Window (3 Requested Fields) */}
-      <div className="navi-window">
+    <div className="horizontal-desktop-track window-slide-right">
+      {/* WINDOW 1 (Left): Formulario Morfológico */}
+      <div className="navi-window w-96 shrink-0">
         <div className="navi-window-header">
           <span className="font-mono text-xs text-yellow-400 flex items-center gap-1.5">
-            <PlusCircle className="w-3.5 h-3.5 text-green-400" /> MORPHOLOGY_INPUT_FORM.EXE
+            <PlusCircle className="w-3.5 h-3.5 text-green-400" /> MORPHO_INPUT_FORM.EXE
           </span>
           <div className="navi-window-controls">
             <div className="navi-win-btn">_</div>
@@ -225,11 +145,11 @@ export default function MorphoModule({ records, setRecords }) {
         </div>
 
         <div className="p-5">
-          <h2 className="text-xl font-bold text-yellow-400 mb-4 border-b border-purple-800 pb-2 flex items-center gap-2">
-            <Leaf className="w-5 h-5 text-green-400" /> SUBMENÚ: PARÁMETROS MORFOLÓGICOS DE LA PLANTA
+          <h2 className="text-lg font-bold text-yellow-400 mb-4 border-b border-purple-800 pb-2 flex items-center gap-2">
+            <Leaf className="w-5 h-5 text-green-400" /> REGISTRO DE PLANTA
           </h2>
 
-          <form onSubmit={handleAddRecord} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <form onSubmit={handleAddRecord} className="space-y-4 text-sm">
             <div>
               <label className="text-orange-400 font-bold">1. Número de hojas *</label>
               <input 
@@ -268,46 +188,32 @@ export default function MorphoModule({ records, setRecords }) {
               />
             </div>
 
-            <div className="flex items-end">
-              <button 
-                type="submit" 
-                className="btn-navi btn-navi-green w-full justify-center h-[40px]"
-              >
-                <PlusCircle className="w-4 h-4" /> REGISTRAR DATOS
-              </button>
+            <div>
+              <label>ID Planta (Opcional)</label>
+              <input 
+                type="text" 
+                placeholder="Ej. PLT-0016"
+                value={plantId}
+                onChange={(e) => setPlantId(e.target.value)}
+                className="w-full font-mono text-xs"
+              />
             </div>
+
+            <button 
+              type="submit" 
+              className="btn-navi btn-navi-green w-full justify-center h-[42px] mt-2"
+            >
+              <PlusCircle className="w-4 h-4" /> REGISTRAR MUESTRA
+            </button>
           </form>
         </div>
       </div>
 
-      {/* Summary Statistics Panel */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono">
-        <div className="bg-purple-950/80 p-3 border border-purple-700 rounded text-center">
-          <span className="text-xs text-purple-300 block">HOJAS PROMEDIO</span>
-          <span className="text-xl font-bold text-orange-400">{stats.avgL} hojas</span>
-        </div>
-
-        <div className="bg-purple-950/80 p-3 border border-purple-700 rounded text-center">
-          <span className="text-xs text-purple-300 block">DIÁMETRO PROM. (CM)</span>
-          <span className="text-xl font-bold text-yellow-400">{stats.avgD} cm</span>
-        </div>
-
-        <div className="bg-purple-950/80 p-3 border border-purple-700 rounded text-center">
-          <span className="text-xs text-purple-300 block">LARGO PROM. (CM)</span>
-          <span className="text-xl font-bold text-green-400">{stats.avgH} cm</span>
-        </div>
-
-        <div className="bg-purple-950/80 p-3 border border-purple-700 rounded text-center">
-          <span className="text-xs text-purple-300 block">TOTAL MUESTRAS</span>
-          <span className="text-xl font-bold text-cyan-400">{records.length}</span>
-        </div>
-      </div>
-
-      {/* Matrix Table Window */}
-      <div className="navi-window">
+      {/* WINDOW 2 (Middle): Capacidad Máxima & Lotes */}
+      <div className="navi-window w-80 shrink-0">
         <div className="navi-window-header">
-          <span className="font-mono text-xs text-cyan-400 flex items-center gap-1.5">
-            <BarChart3 className="w-3.5 h-3.5 text-yellow-400" /> DATA_MATRIX_VIEW.GRID
+          <span className="font-mono text-xs text-green-400 flex items-center gap-1.5">
+            <Target className="w-3.5 h-3.5 text-yellow-400" /> SYSTEM_CAPACITY.CFG
           </span>
           <div className="navi-window-controls">
             <div className="navi-win-btn">_</div>
@@ -316,64 +222,145 @@ export default function MorphoModule({ records, setRecords }) {
           </div>
         </div>
 
-        <div className="p-4">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
-            <h3 className="text-md font-bold text-yellow-400 flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-green-400" /> MATRIZ DE DATOS MORFOLÓGICOS ({records.length})
-            </h3>
+        <div className="p-4 space-y-5">
+          <div>
+            <label className="text-yellow-400 font-bold mb-1 block flex items-center gap-1.5">
+              <Target className="w-4 h-4 text-green-400" /> CAPACIDAD MÁXIMA MUESTRAS
+            </label>
+            <select 
+              value={maxCapacity} 
+              onChange={(e) => setMaxCapacity(Number(e.target.value))}
+              className="w-full text-base font-bold text-green-400 mb-2"
+            >
+              <option value={100}>100 Muestras</option>
+              <option value={500}>500 Muestras</option>
+              <option value={1000}>1,000 Muestras</option>
+              <option value={3000}>3,000 Muestras</option>
+              <option value={5000}>5,000 Muestras</option>
+              <option value={9000}>9,000 Muestras (Máximo)</option>
+            </select>
+            <p className="text-xs text-purple-300 font-mono">
+              Progreso: <span className="text-yellow-300 font-bold">{records.length}</span> / <span className="text-green-400 font-bold">{maxCapacity}</span> ({progressPct}%)
+            </p>
+          </div>
 
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <div className="relative w-full sm:w-64">
-                <input 
-                  type="text" 
-                  placeholder="Buscar muestra..."
-                  value={searchTerm}
-                  onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-                  className="w-full pl-8 py-1 text-sm font-mono"
-                />
-                <Search className="w-4 h-4 text-purple-400 absolute left-2 top-2" />
-              </div>
+          <div className="pt-4 border-t border-purple-800">
+            <label className="text-green-400 font-bold mb-2 block flex items-center gap-1.5">
+              <Zap className="w-4 h-4 text-yellow-400" /> GENERADOR DE LOTE
+            </label>
+            <div className="space-y-3">
+              <input 
+                type="number" 
+                min="1" 
+                max="9000" 
+                value={batchCount} 
+                onChange={(e) => setBatchCount(e.target.value)}
+                placeholder="100"
+                className="w-full text-center font-bold"
+              />
+              <button 
+                onClick={handleGenerateBatch} 
+                className="btn-navi btn-navi-green text-xs w-full justify-center"
+                disabled={records.length >= maxCapacity}
+              >
+                <Zap className="w-4 h-4" /> GENERAR {batchCount} MUESTRAS
+              </button>
+              <button 
+                onClick={handleClearAll} 
+                className="btn-navi btn-navi-orange text-xs w-full justify-center"
+              >
+                <Trash2 className="w-4 h-4" /> VACIAR REGISTROS
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* WINDOW 3 (Right): Matriz de Datos Morfológicos & Estadísticas */}
+      <div className="navi-window w-[540px] shrink-0">
+        <div className="navi-window-header">
+          <span className="font-mono text-xs text-cyan-400 flex items-center gap-1.5">
+            <BarChart3 className="w-3.5 h-3.5 text-yellow-400" /> MORPHO_DATA_MATRIX.GRID
+          </span>
+          <div className="navi-window-controls">
+            <div className="navi-win-btn">_</div>
+            <div className="navi-win-btn">□</div>
+            <div className="navi-win-btn navi-win-btn-close">X</div>
+          </div>
+        </div>
+
+        <div className="p-4 space-y-4">
+          {/* Summary Stats Cards */}
+          <div className="grid grid-cols-4 gap-2 font-mono text-center text-xs">
+            <div className="bg-purple-950/80 p-2 border border-purple-700 rounded">
+              <span className="text-purple-300 block text-[10px]">HOJAS PROM.</span>
+              <span className="text-sm font-bold text-orange-400">{stats.avgL}</span>
+            </div>
+            <div className="bg-purple-950/80 p-2 border border-purple-700 rounded">
+              <span className="text-purple-300 block text-[10px]">DIÁM. (CM)</span>
+              <span className="text-sm font-bold text-yellow-400">{stats.avgD}</span>
+            </div>
+            <div className="bg-purple-950/80 p-2 border border-purple-700 rounded">
+              <span className="text-purple-300 block text-[10px]">LARGO (CM)</span>
+              <span className="text-sm font-bold text-green-400">{stats.avgH}</span>
+            </div>
+            <div className="bg-purple-950/80 p-2 border border-purple-700 rounded">
+              <span className="text-purple-300 block text-[10px]">TOTAL</span>
+              <span className="text-sm font-bold text-cyan-400">{records.length}</span>
             </div>
           </div>
 
-          <div className="overflow-x-auto border border-purple-800">
+          <div className="flex justify-between items-center gap-2">
+            <h3 className="text-xs font-bold text-yellow-400 flex items-center gap-1.5">
+              <BarChart3 className="w-4 h-4 text-green-400" /> REGISTROS MORFOLÓGICOS
+            </h3>
+            <div className="relative w-44">
+              <input 
+                type="text" 
+                placeholder="Buscar..."
+                value={searchTerm}
+                onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+                className="w-full pl-7 py-0.5 text-xs font-mono"
+              />
+              <Search className="w-3.5 h-3.5 text-purple-400 absolute left-2 top-1.5" />
+            </div>
+          </div>
+
+          <div className="overflow-x-auto border border-purple-800 h-[220px]">
             <table className="grid-table">
               <thead>
                 <tr>
                   <th>N°</th>
                   <th>ID Planta</th>
-                  <th>Número de Hojas</th>
-                  <th>Diámetro Planta (cm)</th>
-                  <th>Largo Planta (cm)</th>
-                  <th>Fecha</th>
-                  <th>Acciones</th>
+                  <th>N° Hojas</th>
+                  <th>Diámetro (cm)</th>
+                  <th>Largo (cm)</th>
+                  <th>Acción</th>
                 </tr>
               </thead>
               <tbody>
                 {paginatedRecords.length > 0 ? (
                   paginatedRecords.map((r) => (
                     <tr key={r.id}>
-                      <td className="font-bold text-yellow-300">#{r.sampleNo}</td>
-                      <td className="font-mono text-cyan-300">{r.plantId}</td>
-                      <td className="font-bold text-orange-400">{r.leaves} hojas</td>
-                      <td className="font-bold text-yellow-400">{r.diameter} cm</td>
-                      <td className="font-bold text-green-400">{r.height} cm</td>
-                      <td className="text-gray-300 text-xs font-mono">{r.date}</td>
+                      <td className="font-bold text-yellow-300 text-xs">#{r.sampleNo}</td>
+                      <td className="font-mono text-cyan-300 text-xs">{r.plantId}</td>
+                      <td className="font-bold text-orange-400 text-xs">{r.leaves}</td>
+                      <td className="font-bold text-yellow-400 text-xs">{r.diameter}</td>
+                      <td className="font-bold text-green-400 text-xs">{r.height}</td>
                       <td>
                         <button 
                           onClick={() => handleDeleteRecord(r.id)} 
                           className="text-red-400 hover:text-red-300 p-1"
-                          title="Eliminar"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="7" className="text-center py-6 text-purple-300 font-mono">
-                      No hay muestras registradas en el sistema.
+                    <td colSpan="6" className="text-center py-6 text-purple-300 font-mono text-xs">
+                      No hay muestras registradas.
                     </td>
                   </tr>
                 )}
@@ -381,26 +368,24 @@ export default function MorphoModule({ records, setRecords }) {
             </table>
           </div>
 
-          {/* Pagination Bar */}
+          {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex justify-between items-center mt-4 pt-2 border-t border-purple-800 text-xs text-purple-300 font-mono">
-              <div>
-                Página <span className="text-yellow-400 font-bold">{currentPage}</span> de <span className="text-green-400 font-bold">{totalPages}</span> (Mostrando {paginatedRecords.length} de {filteredRecords.length})
-              </div>
+            <div className="flex justify-between items-center text-[11px] text-purple-300 font-mono pt-1">
+              <span>Pág {currentPage}/{totalPages}</span>
               <div className="flex gap-2">
                 <button 
                   onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
-                  className="btn-navi py-1 px-3 text-xs disabled:opacity-40"
+                  className="btn-navi py-0.5 px-2 text-[10px] disabled:opacity-40"
                 >
-                  <ChevronLeft className="w-3 h-3" /> ANTERIOR
+                  <ChevronLeft className="w-3 h-3" />
                 </button>
                 <button 
                   onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                   disabled={currentPage === totalPages}
-                  className="btn-navi py-1 px-3 text-xs disabled:opacity-40"
+                  className="btn-navi py-0.5 px-2 text-[10px] disabled:opacity-40"
                 >
-                  SIGUIENTE <ChevronRight className="w-3 h-3" />
+                  <ChevronRight className="w-3 h-3" />
                 </button>
               </div>
             </div>
