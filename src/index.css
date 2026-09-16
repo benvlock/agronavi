@@ -12,9 +12,9 @@
   --purple-dark: #3c096c;
   --purple-glow: rgba(157, 78, 221, 0.45);
   
-  --green-neon: #00ff66;
+  --green-neon: #00ff88;
   --green-dark: #008837;
-  --green-glow: rgba(0, 255, 102, 0.4);
+  --green-glow: rgba(0, 255, 136, 0.4);
 
   --yellow-cyber: #ffe600;
   --yellow-glow: rgba(255, 230, 0, 0.4);
@@ -26,25 +26,26 @@
   --text-main: #f4eeff;
   --text-muted: #c2acdf;
 
-  /* Typography */
-  --font-serif: 'Times New Roman', Times, serif;
+  /* Typography requested by user: Comic Sans */
+  --font-main: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: var(--font-main);
 }
 
 body {
   background-color: var(--bg-dark);
   color: var(--text-main);
-  font-family: var(--font-serif);
+  font-family: var(--font-main);
   min-height: 100vh;
   overflow-x: hidden;
   background-image: 
     radial-gradient(circle at 50% 15%, rgba(157, 78, 221, 0.18) 0%, transparent 60%),
-    radial-gradient(circle at 10% 85%, rgba(0, 255, 102, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 10% 85%, rgba(0, 255, 136, 0.12) 0%, transparent 50%),
     linear-gradient(rgba(10, 4, 18, 0.96), rgba(10, 4, 18, 0.96)),
     repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(157, 78, 221, 0.04) 2px, rgba(157, 78, 221, 0.04) 4px);
   background-attachment: fixed;
@@ -137,7 +138,7 @@ body {
   border: 1px solid var(--purple-neon);
   background: #190933;
   color: var(--text-main);
-  font-family: monospace;
+  font-family: var(--font-main);
   font-size: 11px;
   display: flex;
   align-items: center;
@@ -160,7 +161,7 @@ body {
 
 /* Typography styles */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-serif);
+  font-family: var(--font-main);
   letter-spacing: 0.5px;
 }
 
@@ -172,7 +173,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Buttons Lain Style */
 .btn-navi {
-  font-family: var(--font-serif);
+  font-family: var(--font-main);
   background: var(--purple-dark);
   color: var(--text-main);
   border: 1px solid var(--purple-neon);
@@ -197,7 +198,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-navi-green {
-  background: rgba(0, 255, 102, 0.12);
+  background: rgba(0, 255, 136, 0.12);
   color: var(--green-neon);
   border: 1px solid var(--green-neon);
 }
@@ -231,7 +232,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Forms & Inputs */
 input, select, textarea {
-  font-family: var(--font-serif);
+  font-family: var(--font-main);
   background: #110620;
   border: 1px solid var(--purple-main);
   color: var(--text-main);
@@ -247,7 +248,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 label {
-  font-family: var(--font-serif);
+  font-family: var(--font-main);
   font-size: 14px;
   color: var(--text-muted);
   display: block;
@@ -268,6 +269,7 @@ label {
   font-weight: bold;
   text-align: left;
   font-size: 14px;
+  font-family: var(--font-main);
 }
 
 .grid-table td {
@@ -275,6 +277,7 @@ label {
   padding: 8px 10px;
   background: rgba(21, 9, 38, 0.7);
   font-size: 14px;
+  font-family: var(--font-main);
 }
 
 .grid-table tr:hover td {
@@ -294,7 +297,7 @@ label {
 
 /* Tachibana General Labs Signature */
 .tachibana-signature {
-  font-family: var(--font-serif);
+  font-family: var(--font-main);
   color: #5a258c;
   font-size: 16px;
   letter-spacing: 1.5px;
