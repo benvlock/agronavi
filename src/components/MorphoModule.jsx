@@ -111,7 +111,7 @@ export default function MorphoModule({ records, setRecords }) {
 
   // Statistical summary
   const stats = useMemo(() => {
-    if (records.length === 0) return { avgH: 0, avgD: 0, avgL: 0, minH: 0, maxH: 0 };
+    if (records.length === 0) return { avgH: '0.0', avgD: '0.00', avgL: '0.0', minH: '0.0', maxH: '0.0' };
     const heights = records.map(r => Number(r.height));
     const diameters = records.map(r => Number(r.diameter));
     const leavesList = records.map(r => Number(r.leaves));
@@ -129,10 +129,10 @@ export default function MorphoModule({ records, setRecords }) {
     };
   }, [records]);
 
-  const progressPct = ((records.length / maxCapacity) * 100).toFixed(1);
+  const progressPct = maxCapacity > 0 ? ((records.length / maxCapacity) * 100).toFixed(1) : '0.0';
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 window-slide-right">
       {/* Upper Panel Window Stack: Capacity & Batch Generator */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Window 1: Capacidad Máxima */}
@@ -301,7 +301,7 @@ export default function MorphoModule({ records, setRecords }) {
         <div className="bg-purple-950/80 p-3 border border-purple-700 rounded text-center">
           <span className="text-xs text-purple-300 block font-mono">ALTURA PROMEDIO</span>
           <span className="text-xl font-bold text-green-400">{stats.avgH} cm</span>
-          <span className="text-[10px] text-gray-400 block">Min: {stats.minH} / Máx: {stats.maxH}</span>
+          <span className="text-[10px] text-gray-400 block font-mono">Min: {stats.minH} / Máx: {stats.maxH}</span>
         </div>
 
         <div className="bg-purple-950/80 p-3 border border-purple-700 rounded text-center">
@@ -392,7 +392,7 @@ export default function MorphoModule({ records, setRecords }) {
                 ) : (
                   <tr>
                     <td colSpan="8" className="text-center py-6 text-purple-300 font-mono">
-                      No hay muestras registradas o no coinciden con la búsqueda.
+                      No hay muestras registradas en el sistema.
                     </td>
                   </tr>
                 )}

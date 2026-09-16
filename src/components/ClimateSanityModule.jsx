@@ -53,10 +53,10 @@ export default function ClimateSanityModule({ records, setRecords }) {
 
   // Weather averages
   const totalRain = records.reduce((acc, r) => acc + Number(r.rainMm || 0), 0).toFixed(1);
-  const avgTempGlobal = records.length > 0 ? (records.reduce((acc, r) => acc + Number(r.tempAvg || 0), 0) / records.length).toFixed(1) : '0';
+  const avgTempGlobal = records.length > 0 ? (records.reduce((acc, r) => acc + Number(r.tempAvg || 0), 0) / records.length).toFixed(1) : '0.0';
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 window-slide-right">
       {/* Weather & Disease Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="navi-window p-4 flex items-center gap-3">
@@ -285,7 +285,7 @@ export default function ClimateSanityModule({ records, setRecords }) {
                 ) : (
                   <tr>
                     <td colSpan="9" className="text-center py-6 text-purple-300 font-mono">
-                      No hay datos climáticos ni fitosanitarios registrados.
+                      No hay datos climáticos ni fitosanitarios registrados en el sistema.
                     </td>
                   </tr>
                 )}

@@ -64,6 +64,22 @@ body {
   background-size: 100% 3px, 6px 100%;
 }
 
+/* Horizontal Window Slide to Right Animation */
+@keyframes windowSlideRight {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.window-slide-right {
+  animation: windowSlideRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 /* Scrollbar retro */
 ::-webkit-scrollbar {
   width: 8px;
@@ -140,20 +156,6 @@ body {
   background: #ff3366;
   border-color: #ff3366;
   color: #ffffff;
-}
-
-/* Lain Wireframe Decorator */
-.corner-decor {
-  position: relative;
-}
-.corner-decor::after {
-  content: '+';
-  position: absolute;
-  top: 2px;
-  right: 6px;
-  color: var(--green-neon);
-  font-size: 14px;
-  font-family: monospace;
 }
 
 /* Typography styles */

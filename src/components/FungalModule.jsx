@@ -54,7 +54,7 @@ export default function FungalModule({ records, setRecords }) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 window-slide-right">
       {/* Live Calculator Window */}
       <div className="navi-window">
         <div className="navi-window-header">
@@ -276,7 +276,7 @@ export default function FungalModule({ records, setRecords }) {
                 ) : (
                   <tr>
                     <td colSpan="9" className="text-center py-6 text-purple-300 font-mono">
-                      No hay evaluaciones fúngicas registradas.
+                      No hay evaluaciones fúngicas registradas en el sistema.
                     </td>
                   </tr>
                 )}
