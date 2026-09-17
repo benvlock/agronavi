@@ -37,7 +37,7 @@ export default function BootLogin({ onLogin }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!operatorName.trim() || !accessDate) {
-      alert('Por favor completa tanto el Nombre de Usuario como la Fecha de Entrada.');
+      alert('Por favor completa tanto el Nombre de Usuario como la Fecha de Ingreso.');
       return;
     }
 
@@ -52,7 +52,7 @@ export default function BootLogin({ onLogin }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-[#090d16] z-50 flex items-center justify-center min-h-screen p-4 font-mono select-none overflow-hidden">
+    <div className="fixed inset-0 bg-[#090d16] z-50 flex items-center justify-center min-h-screen p-4 font-sans select-none overflow-hidden">
       {/* Background Grid */}
       <div className="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:32px_32px] opacity-10 pointer-events-none" />
 
@@ -60,11 +60,11 @@ export default function BootLogin({ onLogin }) {
       {phase === 'boot' && (
         <div id="boot-text-container" className="flex flex-col items-center justify-center text-center z-10">
           <Terminal className="w-10 h-10 text-emerald-400 mb-3" />
-          <h1 className="text-4xl font-bold text-emerald-400 tracking-wider">
+          <h1 className="text-4xl font-bold text-emerald-400 tracking-wider font-mono">
             AGRONAVI OS
           </h1>
-          <span className="text-xs text-sky-400 tracking-widest mt-2">
-            INICIALIZANDO PLATAFORMA DE CAMPO Y LAB (25,000 MUESTRAS)...
+          <span className="text-xs text-sky-400 tracking-widest mt-2 font-mono">
+            INICIALIZANDO PLATAFORMA DE CAMPO Y LABORATORIO...
           </span>
         </div>
       )}
@@ -77,27 +77,27 @@ export default function BootLogin({ onLogin }) {
         >
           <div className="flex items-center gap-2 border-b border-gray-700 pb-3 mb-5">
             <Lock className="w-5 h-5 text-emerald-400" />
-            <h2 className="text-base font-bold text-emerald-400">ACCESO DE OPERADOR</h2>
+            <h2 className="text-base font-bold text-emerald-400">Identificación de Usuario</h2>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4 text-xs">
             <div>
               <label className="text-gray-300 block mb-1 font-semibold flex items-center gap-1.5">
-                <User className="w-4 h-4 text-emerald-400" /> NOMBRE DE USUARIO / TÉCNICO *
+                <User className="w-4 h-4 text-emerald-400" /> Nombre de Usuario / Técnico *
               </label>
               <input 
                 type="text"
                 placeholder="Ingresa tu nombre..."
                 value={operatorName}
                 onChange={(e) => setOperatorName(e.target.value)}
-                className="w-full bg-[#0d131f] border border-gray-700 rounded px-3 py-2.5 text-gray-100 font-mono focus:border-emerald-400 outline-none"
+                className="w-full bg-[#0d131f] border border-gray-700 rounded px-3 py-2.5 text-gray-100 font-sans focus:border-emerald-400 outline-none"
                 required
               />
             </div>
 
             <div>
               <label className="text-gray-300 block mb-1 font-semibold flex items-center gap-1.5">
-                <Calendar className="w-4 h-4 text-emerald-400" /> FECHA DE INGRESO *
+                <Calendar className="w-4 h-4 text-emerald-400" /> Fecha de Ingreso *
               </label>
               <input 
                 type="date"
@@ -112,7 +112,7 @@ export default function BootLogin({ onLogin }) {
               type="submit"
               className="w-full mt-4 btn-navi btn-navi-green justify-center py-3 font-bold text-xs"
             >
-              <CheckCircle className="w-4 h-4" /> ACCEDER A LA SISTEMÁTICA
+              <CheckCircle className="w-4 h-4" /> ACCEDER AL SISTEMA
             </button>
           </form>
         </div>

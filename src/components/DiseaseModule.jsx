@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PlusCircle, ShieldAlert, Trash2, Calendar, Activity } from 'lucide-react';
+import { PlusCircle, ShieldAlert, Trash2, Calendar, Activity, CheckCircle } from 'lucide-react';
 
 export default function DiseaseModule({ records, setRecords }) {
   // Form State
@@ -12,6 +12,9 @@ export default function DiseaseModule({ records, setRecords }) {
   const [lotInfectedPlants, setLotInfectedPlants] = useState('15');
   const [notes, setNotes] = useState('');
 
+  // Sub-view Mode
+  const [viewMode, setViewMode] = useState('all'); // 'all' | 'form' | 'table'
+
   // Calculations
   const numLotTotal = Number(lotTotalPlants) || 0;
   const numLotInfected = Number(lotInfectedPlants) || 0;
@@ -20,7 +23,7 @@ export default function DiseaseModule({ records, setRecords }) {
   const handleAddRecord = (e) => {
     e.preventDefault();
     if (!diseaseName) {
-      alert('Ingresa el nombre o tipo de enfermedad observada.');
+      alert('Por favor ingresa el nombre de la enfermedad o patógeno observado.');
       return;
     }
 
@@ -34,7 +37,7 @@ export default function DiseaseModule({ records, setRecords }) {
       lotTotalPlants: numLotTotal,
       lotInfectedPlants: numLotInfected,
       lotIncidencePct: Number(lotIncidencePct),
-      notes: notes || 'Evaluación fitosanitaria individual y de lote'
+      notes: notes || 'Evaluación fitosanitaria en lote'
     };
 
     setRecords([newRec, ...records]);
@@ -51,64 +54,101 @@ export default function DiseaseModule({ records, setRecords }) {
   };
 
   return (
-    <div className="space-y-6 window-slide-right">
-      {/* Upper Status Window */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="navi-window p-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded bg-amber-950 border border-amber-400 flex items-center justify-center">
-            <ShieldAlert className="w-6 h-6 text-amber-400" />
+    <div className="space-y-5">
+      {/* Header Bar */}
+      <div className="navi-window p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <ShieldAlert className="w-5 h-5 text-amber-400" />
+            <h2 className="text-lg font-bold text-gray-100">
+              Fitosanidad y Evaluación de Enfermedades
+            </h2>
+            <span className="text-xs bg-amber-950 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded font-mono">
+              Incidencia % & Severidad
+            </span>
+          </div>
+          <p className="text-xs text-gray-400 mt-0.5">
+            Registro de severidad foliar individual e incidencia fitosanitaria por lotes de cultivo.
+          </p>
+        </div>
+
+        {/* View Mode Toggle Menu */}
+        <div className="flex items-center gap-1.5 bg-gray-900 p-1 border border-gray-800 rounded">
+          <button 
+            onClick={() => setViewMode('all')}
+            className={`px-2.5 py-1 text-xs rounded font-semibold transition-all ${
+              viewMode === 'all' ? 'bg-amber-500 text-gray-950 shadow' : 'text-gray-400 hover:text-gray-200'
+            }`}
+          >
+            Vista Completa
+          </button>
+          <button 
+            onClick={() => setViewMode('form')}
+            className={`px-2.5 py-1 text-xs rounded font-semibold transition-all ${
+              viewMode === 'form' ? 'bg-amber-500 text-gray-950 shadow' : 'text-gray-400 hover:text-gray-200'
+            }`}
+          >
+            Formulario
+          </button>
+          <button 
+            onClick={() => setViewMode('table')}
+            className={`px-2.5 py-1 text-xs rounded font-semibold transition-all ${
+              viewMode === 'table' ? 'bg-amber-500 text-gray-950 shadow' : 'text-gray-400 hover:text-gray-200'
+            }`}
+          >
+            Historial ({records.length})
+          </button>
+        </div>
+      </div>
+
+      {/* Status KPI Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="navi-window p-3.5 flex items-center gap-3">
+          <div className="w-10 h-10 rounded bg-amber-950 border border-amber-400 flex items-center justify-center shrink-0">
+            <ShieldAlert className="w-5 h-5 text-amber-400" />
           </div>
           <div>
-            <span className="text-xs text-gray-400 block font-mono">EVALUACIONES FITOSANITARIAS</span>
-            <span className="text-xl font-bold text-amber-400">{records.length} Registros</span>
+            <span className="text-[10px] text-gray-400 block font-mono">EVALUACIONES FITOSANITARIAS</span>
+            <span className="text-lg font-bold text-amber-400">{records.length} Registros</span>
           </div>
         </div>
 
-        <div className="navi-window p-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded bg-gray-900 border border-gray-700 flex items-center justify-center">
-            <Activity className="w-6 h-6 text-sky-400" />
+        <div className="navi-window p-3.5 flex items-center gap-3">
+          <div className="w-10 h-10 rounded bg-gray-900 border border-gray-700 flex items-center justify-center shrink-0">
+            <Activity className="w-5 h-5 text-sky-400" />
           </div>
           <div>
-            <span className="text-xs text-gray-400 block font-mono">% INCIDENCIA LOTE PROM.</span>
-            <span className="text-xl font-bold text-sky-400">
+            <span className="text-[10px] text-gray-400 block font-mono">INCIDENCIA LOTE PROMEDIO</span>
+            <span className="text-lg font-bold text-sky-400">
               {records.length > 0 ? (records.reduce((acc, r) => acc + Number(r.lotIncidencePct || 0), 0) / records.length).toFixed(1) : '0.0'}%
             </span>
           </div>
         </div>
 
-        <div className="navi-window p-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded bg-gray-900 border border-gray-700 flex items-center justify-center">
-            <Calendar className="w-6 h-6 text-emerald-400" />
+        <div className="navi-window p-3.5 flex items-center gap-3">
+          <div className="w-10 h-10 rounded bg-gray-900 border border-gray-700 flex items-center justify-center shrink-0">
+            <Calendar className="w-5 h-5 text-emerald-400" />
           </div>
           <div>
-            <span className="text-xs text-gray-400 block font-mono">ÚLTIMO REGISTRO</span>
-            <span className="text-base font-bold text-emerald-400 font-mono">
-              {records.length > 0 ? records[0].date : 'SIN DATOS'}
+            <span className="text-[10px] text-gray-400 block font-mono">ÚLTIMO REGISTRO</span>
+            <span className="text-sm font-bold text-emerald-400 font-mono">
+              {records.length > 0 ? records[0].date : 'Sin Registros'}
             </span>
           </div>
         </div>
       </div>
 
-      {/* Form Input Window */}
-      <div className="navi-window">
-        <div className="navi-window-header">
-          <span className="font-mono text-xs text-amber-400 flex items-center gap-1.5 font-semibold">
-            <ShieldAlert className="w-3.5 h-3.5 text-amber-400" /> FITOSANIDAD_EVALUACIÓN.EXE
-          </span>
-          <div className="navi-window-controls">
-            <div className="navi-win-btn">_</div>
-            <div className="navi-win-btn">□</div>
-            <div className="navi-win-btn navi-win-btn-close">X</div>
+      {/* Main Form Section */}
+      {(viewMode === 'all' || viewMode === 'form') && (
+        <div className="navi-window p-5 space-y-4">
+          <div className="border-b border-gray-800 pb-2">
+            <h3 className="text-sm font-bold text-gray-100 flex items-center gap-2">
+              <ShieldAlert className="w-4 h-4 text-amber-400" /> Formulario de Registro Fitosanitario
+            </h3>
           </div>
-        </div>
 
-        <div className="p-5">
-          <h2 className="text-base font-bold text-gray-100 mb-4 flex items-center gap-2 border-b border-gray-700 pb-2">
-            <ShieldAlert className="w-4 h-4 text-amber-400" /> REGISTRO DE FITOSANIDAD Y ENFERMEDADES
-          </h2>
-
-          <form onSubmit={handleAddRecord} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+          <form onSubmit={handleAddRecord} className="space-y-4 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
               <div>
                 <label className="text-gray-300 font-medium">Fecha Evaluada *</label>
                 <input 
@@ -121,7 +161,7 @@ export default function DiseaseModule({ records, setRecords }) {
               </div>
 
               <div>
-                <label className="text-gray-300 font-medium">ID / Código Planta</label>
+                <label className="text-gray-300 font-medium">ID / Código Planta (Individuo)</label>
                 <input 
                   type="text" 
                   placeholder="Ej. PLT-IND-001"
@@ -185,16 +225,16 @@ export default function DiseaseModule({ records, setRecords }) {
               </div>
 
               <div className="flex flex-col justify-center">
-                <span className="text-[11px] text-gray-400 font-mono block">INCIDENCIA CALCULADA DE LOTE</span>
+                <span className="text-[11px] text-gray-400 font-mono block">INCIDENCIA CALCULADA DEL LOTE</span>
                 <span className="text-xl font-bold text-sky-400 font-mono">{lotIncidencePct}%</span>
               </div>
             </div>
 
             <div>
-              <label className="text-gray-400 text-xs">Notas Fitosanitarias</label>
+              <label className="text-gray-400 text-xs">Observaciones Fitosanitarias</label>
               <input 
                 type="text" 
-                placeholder="Ej. Lesiones en envés de hojas basales. Aplicación biológica programada."
+                placeholder="Ej. Síntomas visibles en envés foliar. Aplicación biológica recomendada."
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 className="w-full text-xs"
@@ -206,27 +246,18 @@ export default function DiseaseModule({ records, setRecords }) {
             </button>
           </form>
         </div>
-      </div>
+      )}
 
-      {/* History Table */}
-      <div className="navi-window">
-        <div className="navi-window-header">
-          <span className="font-mono text-xs text-gray-300 flex items-center gap-1.5 font-semibold">
-            <ShieldAlert className="w-3.5 h-3.5 text-amber-400" /> HISTORIAL_FITOSANITARIO.GRID
-          </span>
-          <div className="navi-window-controls">
-            <div className="navi-win-btn">_</div>
-            <div className="navi-win-btn">□</div>
-            <div className="navi-win-btn navi-win-btn-close">X</div>
+      {/* Main Table Section */}
+      {(viewMode === 'all' || viewMode === 'table') && (
+        <div className="navi-window p-4 space-y-4">
+          <div className="border-b border-gray-800 pb-3 flex justify-between items-center">
+            <h3 className="text-sm font-bold text-gray-100 flex items-center gap-2">
+              <ShieldAlert className="w-4 h-4 text-amber-400" /> Historial de Registros Fitosanitarios ({records.length})
+            </h3>
           </div>
-        </div>
 
-        <div className="p-4">
-          <h3 className="text-xs font-bold text-gray-200 mb-3">
-            REGISTROS FITOSANITARIOS ({records.length})
-          </h3>
-
-          <div className="overflow-x-auto border border-gray-700 rounded">
+          <div className="overflow-x-auto border border-gray-800 rounded min-h-[300px]">
             <table className="grid-table">
               <thead>
                 <tr>
@@ -234,9 +265,9 @@ export default function DiseaseModule({ records, setRecords }) {
                   <th>ID Planta</th>
                   <th>Patógeno / Enfermedad</th>
                   <th>Severidad</th>
-                  <th>Plantas Lote (Infectadas / Total)</th>
+                  <th>Lote (Infectadas / Total)</th>
                   <th>% Incidencia Lote</th>
-                  <th>Notas</th>
+                  <th>Observaciones</th>
                   <th>Acción</th>
                 </tr>
               </thead>
@@ -259,6 +290,7 @@ export default function DiseaseModule({ records, setRecords }) {
                         <button 
                           onClick={() => handleDelete(r.id)} 
                           className="text-rose-400 hover:text-rose-300 p-1"
+                          title="Eliminar registro"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -267,8 +299,8 @@ export default function DiseaseModule({ records, setRecords }) {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="8" className="text-center py-8 text-gray-400 font-mono text-xs">
-                      No hay registros de enfermedades en plantas.
+                    <td colSpan="8" className="text-center py-12 text-gray-400 font-mono text-xs">
+                      No hay registros de fitosanidad guardados.
                     </td>
                   </tr>
                 )}
@@ -276,7 +308,7 @@ export default function DiseaseModule({ records, setRecords }) {
             </table>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
