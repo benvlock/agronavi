@@ -12,7 +12,6 @@ import SupabaseConfigModal from './components/SupabaseConfigModal';
 import UserGuideModal from './components/UserGuideModal';
 
 import { getSupabaseClient, LocalDB } from './lib/supabaseClient';
-import { initialMorphoRecords, initialFungalRecords, initialClimateRecords } from './lib/sampleData';
 
 export default function App() {
   // Operator Auth Session State
@@ -22,7 +21,7 @@ export default function App() {
   });
 
   // Navigation State: 'carousel' | 'morpho' | 'fungal' | 'climate' | 'disease'
-  const [activeTab, setActiveTab] = useState('carousel');
+  const [activeTab, setActiveTab] = useState('morpho');
 
   // Modals
   const [showExportModal, setShowExportModal] = useState(false);
@@ -36,17 +35,17 @@ export default function App() {
   // Data Store
   const [morphoRecords, setMorphoRecords] = useState(() => {
     const saved = LocalDB.getMorphoData();
-    return saved.length > 0 ? saved : initialMorphoRecords;
+    return saved.length > 0 ? saved : [];
   });
 
   const [fungalRecords, setFungalRecords] = useState(() => {
     const saved = LocalDB.getFungalData();
-    return saved.length > 0 ? saved : initialFungalRecords;
+    return saved.length > 0 ? saved : [];
   });
 
   const [climateRecords, setClimateRecords] = useState(() => {
     const saved = LocalDB.getClimateData();
-    return saved.length > 0 ? saved : initialClimateRecords;
+    return saved.length > 0 ? saved : [];
   });
 
   const [diseaseRecords, setDiseaseRecords] = useState(() => {
@@ -92,20 +91,17 @@ export default function App() {
     if (window.confirm('¿Cerrar sesión de operador?')) {
       localStorage.removeItem('AGRONAVI_OPERATOR_SESSION');
       setOperatorSession(null);
-      setActiveTab('carousel');
+      setActiveTab('morpho');
     }
   };
 
-  // If not authenticated, show Boot Sequence & Glassmorphism Login Form
+  // If not authenticated, show Boot Sequence & Clean Form
   if (!operatorSession) {
     return <BootLogin onLogin={handleLogin} />;
   }
 
   return (
-    <div className="min-h-screen pb-12 flex flex-col relative font-mono selection:bg-[#00ff88] selection:text-[#0a0a0c]">
-      {/* Subtle CRT Scanlines Effect Overlay */}
-      <div className="crt-overlay" />
-
+    <div className="min-h-screen pb-12 flex flex-col relative font-sans">
       {/* Header Bar */}
       <HeaderNavi 
         onOpenExport={() => setShowExportModal(true)}
@@ -115,8 +111,8 @@ export default function App() {
         morphoCount={morphoRecords.length}
       />
 
-      {/* Main App Container: Left Sidebar Picker + Active View */}
-      <div className="max-w-7xl w-full mx-auto px-4 mt-2 flex-grow flex flex-col md:flex-row gap-6 items-start">
+      {/* Main App Container: Left Sidebar Navigation + Active Module */}
+      <div className="max-w-7xl w-full mx-auto px-4 mt-2 flex-grow flex flex-col md:flex-row gap-5 items-start">
         {/* Left Sidebar Navigation */}
         <SidebarNavi 
           activeTab={activeTab} 
@@ -154,16 +150,16 @@ export default function App() {
         </main>
       </div>
 
-      {/* Lain Wired Footer & TachibanaLab Signature */}
-      <footer className="mt-12 border-t border-purple-900/80 bg-[#120721]/90 py-6 px-4 text-center font-serif">
-        <div className="max-w-7xl mx-auto flex flex-col items-center gap-3">
-          <div className="flex flex-col sm:flex-row justify-between items-center w-full text-xs text-purple-400 font-mono">
-            <span>AGRONAVI CYBERIA // COPLAND OS V4.0 TCG EDITION</span>
-            <span className="text-[#00ff88]">OPERADOR: {operatorSession.operatorName}</span>
-            <span className="text-[#00e5ff]">BD: {isConnected ? 'SUPABASE CLOUD' : 'LOCALSTORAGE'}</span>
+      {/* Clean Footer */}
+      <footer className="mt-12 border-t border-gray-800 bg-gray-950 py-5 px-4 text-center">
+        <div className="max-w-7xl mx-auto flex flex-col items-center gap-2">
+          <div className="flex flex-col sm:flex-row justify-between items-center w-full text-xs text-gray-400 font-mono">
+            <span>AGRONAVI OS V4.0 FIELD EDITION</span>
+            <span className="text-emerald-400">OPERADOR: {operatorSession.operatorName}</span>
+            <span className="text-sky-400">ALMACENAMIENTO: {isConnected ? 'SUPABASE CLOUD' : 'LOCALSTORAGE (HASTA 25,000)'}</span>
           </div>
 
-          <div className="mt-2 tachibana-signature">
+          <div className="mt-1 tachibana-signature">
             an OS Enterprise Product By TachibanaLab
           </div>
         </div>

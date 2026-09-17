@@ -8,41 +8,56 @@ export const exportAgroNaviToExcel = (morphoRecords, fungalRecords, climateRecor
   const avgHeight = totalMorpho > 0 ? (morphoRecords.reduce((acc, r) => acc + Number(r.height || 0), 0) / totalMorpho).toFixed(2) : '0';
   const avgDiameter = totalMorpho > 0 ? (morphoRecords.reduce((acc, r) => acc + Number(r.diameter || 0), 0) / totalMorpho).toFixed(2) : '0';
   const avgLeaves = totalMorpho > 0 ? (morphoRecords.reduce((acc, r) => acc + Number(r.leaves || 0), 0) / totalMorpho).toFixed(2) : '0';
+  const uniqueBlocksCount = new Set(morphoRecords.map(r => r.blockId || 'Sin Bloque')).size;
 
   const summaryData = [
-    ['SISTEMA AGRONÁUTICO DE DATOS - AGRONAVI CYBERIA'],
-    ['REPORTE DE CAMPO Y ENSAYO AGRONÓMICO'],
+    ['SISTEMA AGRONÓMICO Y LABORATOIAL - AGRONAVI OS'],
+    ['REPORTE DE CAMPO, ENSAYO AGRONÓMICO Y SALUD DE SUELO'],
     ['Fecha de Exportación:', new Date().toLocaleString('es-ES')],
+    ['Capacidad de Plataforma:', 'Hasta 25,000 Muestras'],
     [''],
     ['MÉTRICA / MÓDULO', 'VALOR OBSERVADO / TOTAL', 'OBSERVACIONES'],
-    ['Total de Muestras Morfológicas', totalMorpho, `Muestras evaluadas de meta seleccionada`],
-    ['Promedio Altura de Planta (cm)', `${avgHeight} cm`, 'Medición desde la base al ápice'],
-    ['Promedio Diámetro Basal (mm)', `${avgDiameter} mm`, 'Medición en cuello de raíz'],
-    ['Promedio Número de Hojas', `${avgLeaves} hojas`, 'Conteo foliar por planta'],
+    ['Total Muestras Evaluadas', totalMorpho, `Registros morfológicos acumulados`],
+    ['Total Bloques / Parcelas', uniqueBlocksCount, 'Bloques muestreados en ensayo'],
+    ['Promedio Largo/Altura de Planta (cm)', `${avgHeight} cm`, 'Medición desde la base al ápice foliar'],
+    ['Promedio Diámetro Basal (mm)', `${avgDiameter} mm`, 'Medición en cuello de raíz o tallo'],
+    ['Promedio Conteo de Hojas', `${avgLeaves} hojas`, 'Hojas expandidas por planta'],
     ['Registros de Colonización Fúngica', fungalRecords.length, 'Micorrizas VAM y Trichoderma spp.'],
-    ['Registros Agroclimáticos & Sanidad', climateRecords.length, 'Temperaturas, mm Lluvia y Enfermedades foliares']
+    ['Registros Agroclimáticos & Fitosanidad', climateRecords.length, 'Temperaturas, Precipitación y Severidad']
   ];
 
   const wsSummary = XLSX.utils.aoa_to_sheet(summaryData);
-  wsSummary['!cols'] = [{ wch: 35 }, { wch: 25 }, { wch: 45 }];
+  wsSummary['!cols'] = [{ wch: 38 }, { wch: 28 }, { wch: 48 }];
   XLSX.utils.book_append_sheet(wb, wsSummary, 'Resumen_Ejecutivo');
 
-  // 2. Hoja: Parámetros Morfológicos
+  // 2. Hoja: Parámetros Morfológicos (Datos Campo)
   const morphoSheetData = morphoRecords.map((r, index) => ({
     'N° Muestra': r.sampleNo || index + 1,
-    'ID Planta / Lote': r.plantId || `P-${String(index + 1).padStart(4, '0')}`,
-    'Altura Planta (cm)': Number(r.height || 0),
+    'Bloque / Parcela': r.blockId || 'Bloque General',
+    'Tratamiento': r.treatment || 'Control',
+    'ID Planta / Etiqueta': r.plantId || `PLT-${String(index + 1).padStart(5, '0')}`,
+    'Largo / Altura (cm)': Number(r.height || 0),
     'Diámetro Basal (mm)': Number(r.diameter || 0),
     'Número de Hojas': Number(r.leaves || 0),
-    'Fecha Registro': r.date || new Date().toISOString().split('T')[0],
+    'Fecha Muestreo': r.date || new Date().toISOString().split('T')[0],
     'Observaciones / Notas': r.notes || '-'
   }));
 
   const wsMorpho = XLSX.utils.json_to_sheet(morphoSheetData);
-  wsMorpho['!cols'] = [{ wch: 12 }, { wch: 18 }, { wch: 18 }, { wch: 20 }, { wch: 16 }, { wch: 16 }, { wch: 30 }];
+  wsMorpho['!cols'] = [
+    { wch: 12 }, 
+    { wch: 18 }, 
+    { wch: 22 }, 
+    { wch: 22 }, 
+    { wch: 20 }, 
+    { wch: 20 }, 
+    { wch: 16 }, 
+    { wch: 16 }, 
+    { wch: 32 }
+  ];
   XLSX.utils.book_append_sheet(wb, wsMorpho, 'Datos_Morfológicos');
 
-  // 3. Hoja: Colonización Fúngica
+  // 3. Hoja: Colonización Fúngica (Datos Lab)
   const fungalSheetData = fungalRecords.map((r, index) => {
     const totalCuts = Number(r.totalCuts || 0);
     const micoCuts = Number(r.micoCuts || 0);
@@ -53,39 +68,60 @@ export const exportAgroNaviToExcel = (morphoRecords, fungalRecords, climateRecor
     return {
       'N° Registro': index + 1,
       'Fecha Evaluada': r.date || new Date().toISOString().split('T')[0],
-      'Muestra / Muestra Radicular': r.sampleName || `Raíz M-${index + 1}`,
-      'Cortes Totales Evaluados': totalCuts,
+      'Muestra Radicular / Identificador': r.sampleName || `Raíz M-${index + 1}`,
+      'Cortes Totales Evaluados (N)': totalCuts,
       'Cortes Presencia Micorrizas': micoCuts,
-      '% Colonización Micorrízica': `${micoPct}%`,
+      '% Colonización Micorrízica (VAM)': `${micoPct}%`,
       'Cortes Presencia Trichoderma': trichoCuts,
       '% Presencia Trichoderma': `${trichoPct}%`,
-      'Estado Biológico': Number(micoPct) > 50 ? 'ALTO' : Number(micoPct) > 20 ? 'MODERADO' : 'BAJO'
+      'Nivel de Colonización': Number(micoPct) >= 50 ? 'ALTO' : Number(micoPct) >= 20 ? 'MODERADO' : 'BAJO'
     };
   });
 
   const wsFungal = XLSX.utils.json_to_sheet(fungalSheetData);
-  wsFungal['!cols'] = [{ wch: 12 }, { wch: 16 }, { wch: 25 }, { wch: 22 }, { wch: 24 }, { wch: 24 }, { wch: 24 }, { wch: 22 }, { wch: 16 }];
+  wsFungal['!cols'] = [
+    { wch: 12 }, 
+    { wch: 16 }, 
+    { wch: 28 }, 
+    { wch: 24 }, 
+    { wch: 24 }, 
+    { wch: 26 }, 
+    { wch: 24 }, 
+    { wch: 22 }, 
+    { wch: 18 }
+  ];
   XLSX.utils.book_append_sheet(wb, wsFungal, 'Colonización_Fúngica');
 
-  // 4. Hoja: Clima y Fitosanidad Foliar
+  // 4. Hoja: Clima y Fitosanidad
   const climateSheetData = climateRecords.map((r, index) => ({
     'N° Registro': index + 1,
-    'Fecha Toma': r.date || new Date().toISOString().split('T')[0],
+    'Fecha Registro': r.date || new Date().toISOString().split('T')[0],
     'Temp. Mínima (°C)': Number(r.tempMin || 0),
     'Temp. Máxima (°C)': Number(r.tempMax || 0),
     'Temp. Promedio (°C)': Number(r.tempAvg || 0),
     'Precipitación / Lluvia (mm)': Number(r.rainMm || 0),
     'Enfermedad Foliar Observada': r.diseaseName || 'Sin síntomas',
-    'Severidad / Escala': r.diseaseSeverity || '0 (Sano)',
-    'Porcentaje Incidencia Folio': r.diseasePct ? `${r.diseasePct}%` : '0%',
+    'Severidad / Escala': r.diseaseSeverity || 'Escala 0 (Sano 0%)',
+    'Porcentaje Incidencia': r.diseasePct ? `${r.diseasePct}%` : '0%',
     'Notas Fitosanitarias': r.notes || '-'
   }));
 
   const wsClimate = XLSX.utils.json_to_sheet(climateSheetData);
-  wsClimate['!cols'] = [{ wch: 12 }, { wch: 14 }, { wch: 18 }, { wch: 18 }, { wch: 18 }, { wch: 24 }, { wch: 26 }, { wch: 20 }, { wch: 22 }, { wch: 30 }];
+  wsClimate['!cols'] = [
+    { wch: 12 }, 
+    { wch: 14 }, 
+    { wch: 18 }, 
+    { wch: 18 }, 
+    { wch: 18 }, 
+    { wch: 24 }, 
+    { wch: 26 }, 
+    { wch: 22 }, 
+    { wch: 22 }, 
+    { wch: 30 }
+  ];
   XLSX.utils.book_append_sheet(wb, wsClimate, 'Clima_y_Fitosanidad');
 
-  // Guardar archivo Excel con nombre con fecha
-  const fileName = `AgroNavi_Datos_Agronomicos_${new Date().toISOString().split('T')[0]}.xlsx`;
+  // Descargar libro Excel con nombre estandarizado
+  const fileName = `AgroNavi_OS_Reporte_Agronomico_${new Date().toISOString().split('T')[0]}.xlsx`;
   XLSX.writeFile(wb, fileName);
 };

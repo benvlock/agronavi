@@ -51,38 +51,38 @@ export default function DiseaseModule({ records, setRecords }) {
   };
 
   return (
-    <div className="space-y-6 window-slide-right font-serif">
+    <div className="space-y-6 window-slide-right">
       {/* Upper Status Window */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="navi-window p-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded bg-orange-950 border border-orange-400 flex items-center justify-center">
-            <ShieldAlert className="w-6 h-6 text-orange-400" />
+          <div className="w-10 h-10 rounded bg-amber-950 border border-amber-400 flex items-center justify-center">
+            <ShieldAlert className="w-6 h-6 text-amber-400" />
           </div>
           <div>
-            <span className="text-xs text-purple-300 block font-mono">ENFERMEDADES REGISTRADAS</span>
-            <span className="text-xl font-bold text-orange-400">{records.length} Evaluaciones</span>
+            <span className="text-xs text-gray-400 block font-mono">EVALUACIONES FITOSANITARIAS</span>
+            <span className="text-xl font-bold text-amber-400">{records.length} Registros</span>
           </div>
         </div>
 
         <div className="navi-window p-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded bg-yellow-950 border border-yellow-400 flex items-center justify-center">
-            <Activity className="w-6 h-6 text-yellow-400" />
+          <div className="w-10 h-10 rounded bg-gray-900 border border-gray-700 flex items-center justify-center">
+            <Activity className="w-6 h-6 text-sky-400" />
           </div>
           <div>
-            <span className="text-xs text-purple-300 block font-mono">% INCIDENCIA LOTE PROM.</span>
-            <span className="text-xl font-bold text-yellow-400">
+            <span className="text-xs text-gray-400 block font-mono">% INCIDENCIA LOTE PROM.</span>
+            <span className="text-xl font-bold text-sky-400">
               {records.length > 0 ? (records.reduce((acc, r) => acc + Number(r.lotIncidencePct || 0), 0) / records.length).toFixed(1) : '0.0'}%
             </span>
           </div>
         </div>
 
         <div className="navi-window p-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded bg-purple-950 border border-purple-400 flex items-center justify-center">
-            <Calendar className="w-6 h-6 text-purple-400" />
+          <div className="w-10 h-10 rounded bg-gray-900 border border-gray-700 flex items-center justify-center">
+            <Calendar className="w-6 h-6 text-emerald-400" />
           </div>
           <div>
-            <span className="text-xs text-purple-300 block font-mono">ÚLTIMO REGISTRO</span>
-            <span className="text-base font-bold text-purple-300 font-mono">
+            <span className="text-xs text-gray-400 block font-mono">ÚLTIMO REGISTRO</span>
+            <span className="text-base font-bold text-emerald-400 font-mono">
               {records.length > 0 ? records[0].date : 'SIN DATOS'}
             </span>
           </div>
@@ -92,8 +92,8 @@ export default function DiseaseModule({ records, setRecords }) {
       {/* Form Input Window */}
       <div className="navi-window">
         <div className="navi-window-header">
-          <span className="font-mono text-xs text-orange-400 flex items-center gap-1.5">
-            <ShieldAlert className="w-3.5 h-3.5 text-yellow-400" /> PLANT_DISEASE_ASSESSMENT.EXE
+          <span className="font-mono text-xs text-amber-400 flex items-center gap-1.5 font-semibold">
+            <ShieldAlert className="w-3.5 h-3.5 text-amber-400" /> FITOSANIDAD_EVALUACIÓN.EXE
           </span>
           <div className="navi-window-controls">
             <div className="navi-win-btn">_</div>
@@ -103,52 +103,52 @@ export default function DiseaseModule({ records, setRecords }) {
         </div>
 
         <div className="p-5">
-          <h2 className="text-lg font-bold text-yellow-400 mb-4 flex items-center gap-2 border-b border-purple-800 pb-2">
-            <ShieldAlert className="w-5 h-5 text-orange-400" /> EVALUACIÓN DE ENFERMEDADES EN PLANTAS (%)
+          <h2 className="text-base font-bold text-gray-100 mb-4 flex items-center gap-2 border-b border-gray-700 pb-2">
+            <ShieldAlert className="w-4 h-4 text-amber-400" /> REGISTRO DE FITOSANIDAD Y ENFERMEDADES
           </h2>
 
           <form onSubmit={handleAddRecord} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
               <div>
-                <label>Fecha Evaluada *</label>
+                <label className="text-gray-300 font-medium">Fecha Evaluada *</label>
                 <input 
                   type="date" 
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="w-full"
+                  className="w-full text-xs"
                   required
                 />
               </div>
 
               <div>
-                <label>ID / Código Planta (Individuo)</label>
+                <label className="text-gray-300 font-medium">ID / Código Planta</label>
                 <input 
                   type="text" 
                   placeholder="Ej. PLT-IND-001"
                   value={plantId}
                   onChange={(e) => setPlantId(e.target.value)}
-                  className="w-full font-mono"
+                  className="w-full font-mono text-xs"
                 />
               </div>
 
               <div>
-                <label className="text-yellow-400 font-bold">Patógeno / Enfermedad *</label>
+                <label className="text-amber-400 font-semibold">Patógeno / Enfermedad *</label>
                 <input 
                   type="text" 
                   placeholder="Ej. Roya, Moniliasis, Mildiu"
                   value={diseaseName}
                   onChange={(e) => setDiseaseName(e.target.value)}
-                  className="w-full font-bold"
+                  className="w-full font-semibold text-xs"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-orange-400 font-bold">Escala de Severidad</label>
+                <label className="text-gray-200 font-semibold">Escala de Severidad</label>
                 <select 
                   value={severityScale}
                   onChange={(e) => setSeverityScale(e.target.value)}
-                  className="w-full font-bold"
+                  className="w-full text-xs font-semibold"
                 >
                   <option value="Escala 0 (Sano 0%)">Escala 0 (Sano 0%)</option>
                   <option value="Escala 1 (Inicial <5%)">Escala 1 (Inicial &lt;5%)</option>
@@ -161,47 +161,47 @@ export default function DiseaseModule({ records, setRecords }) {
             </div>
 
             {/* Lot General Incidence Calculation */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 bg-purple-950/60 border border-purple-700 rounded">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 bg-gray-900 border border-gray-800 rounded">
               <div>
-                <label className="text-purple-300 font-bold">Plantas Totales en Lote (N)</label>
+                <label className="text-gray-300 font-semibold text-xs">Plantas Totales en Lote (N)</label>
                 <input 
                   type="number" 
                   min="1"
                   value={lotTotalPlants}
                   onChange={(e) => setLotTotalPlants(e.target.value)}
-                  className="w-full font-mono text-sm"
+                  className="w-full font-mono text-xs"
                 />
               </div>
 
               <div>
-                <label className="text-orange-400 font-bold">Plantas Infectadas en Lote (n)</label>
+                <label className="text-amber-400 font-semibold text-xs">Plantas Infectadas en Lote (n)</label>
                 <input 
                   type="number" 
                   min="0"
                   value={lotInfectedPlants}
                   onChange={(e) => setLotInfectedPlants(e.target.value)}
-                  className="w-full font-mono text-sm"
+                  className="w-full font-mono text-xs"
                 />
               </div>
 
               <div className="flex flex-col justify-center">
-                <span className="text-xs text-yellow-400 font-mono block">INCIDENCIA CALCULADA EN LOTE</span>
-                <span className="text-2xl font-bold text-yellow-300 font-mono">{lotIncidencePct}%</span>
+                <span className="text-[11px] text-gray-400 font-mono block">INCIDENCIA CALCULADA DE LOTE</span>
+                <span className="text-xl font-bold text-sky-400 font-mono">{lotIncidencePct}%</span>
               </div>
             </div>
 
             <div>
-              <label>Notas de Síntomas / Tratamiento Biológico</label>
+              <label className="text-gray-400 text-xs">Notas Fitosanitarias</label>
               <input 
                 type="text" 
-                placeholder="Ej. Lesiones en envés de hojas basales. Aplicación de Trichoderma programada."
+                placeholder="Ej. Lesiones en envés de hojas basales. Aplicación biológica programada."
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="w-full"
+                className="w-full text-xs"
               />
             </div>
 
-            <button type="submit" className="btn-navi btn-navi-orange w-full justify-center">
+            <button type="submit" className="btn-navi btn-navi-yellow w-full justify-center font-bold h-[38px]">
               <PlusCircle className="w-4 h-4" /> REGISTRAR EVALUACIÓN FITOSANITARIA
             </button>
           </form>
@@ -211,8 +211,8 @@ export default function DiseaseModule({ records, setRecords }) {
       {/* History Table */}
       <div className="navi-window">
         <div className="navi-window-header">
-          <span className="font-mono text-xs text-orange-400 flex items-center gap-1.5">
-            <ShieldAlert className="w-3.5 h-3.5 text-yellow-400" /> DISEASE_EVALUATIONS_LOG.GRID
+          <span className="font-mono text-xs text-gray-300 flex items-center gap-1.5 font-semibold">
+            <ShieldAlert className="w-3.5 h-3.5 text-amber-400" /> HISTORIAL_FITOSANITARIO.GRID
           </span>
           <div className="navi-window-controls">
             <div className="navi-win-btn">_</div>
@@ -222,18 +222,18 @@ export default function DiseaseModule({ records, setRecords }) {
         </div>
 
         <div className="p-4">
-          <h3 className="text-md font-bold text-yellow-400 mb-4">
-            MATRIZ DE REGISTROS FITOSANITARIOS ({records.length})
+          <h3 className="text-xs font-bold text-gray-200 mb-3">
+            REGISTROS FITOSANITARIOS ({records.length})
           </h3>
 
-          <div className="overflow-x-auto border border-purple-800">
+          <div className="overflow-x-auto border border-gray-700 rounded">
             <table className="grid-table">
               <thead>
                 <tr>
                   <th>Fecha</th>
                   <th>ID Planta</th>
                   <th>Patógeno / Enfermedad</th>
-                  <th>Severidad Individuo</th>
+                  <th>Severidad</th>
                   <th>Plantas Lote (Infectadas / Total)</th>
                   <th>% Incidencia Lote</th>
                   <th>Notas</th>
@@ -244,30 +244,30 @@ export default function DiseaseModule({ records, setRecords }) {
                 {records.length > 0 ? (
                   records.map((r) => (
                     <tr key={r.id}>
-                      <td className="text-xs font-mono text-purple-300">{r.date}</td>
-                      <td className="font-mono text-cyan-300">{r.plantId}</td>
-                      <td className="font-bold text-yellow-300">{r.diseaseName}</td>
+                      <td className="text-xs font-mono text-gray-400">{r.date}</td>
+                      <td className="font-mono text-sky-300 text-xs">{r.plantId}</td>
+                      <td className="font-bold text-amber-400 text-xs">{r.diseaseName}</td>
                       <td>
-                        <span className="badge-navi text-orange-400 border-orange-400">
+                        <span className="badge-navi text-amber-400 border-amber-400/60 text-[10px]">
                           {r.severityScale}
                         </span>
                       </td>
-                      <td className="text-xs">{r.lotInfectedPlants} / {r.lotTotalPlants} plantas</td>
-                      <td className="font-bold text-yellow-400">{r.lotIncidencePct}%</td>
-                      <td className="text-xs text-gray-300 max-w-xs truncate">{r.notes}</td>
+                      <td className="text-xs text-gray-300">{r.lotInfectedPlants} / {r.lotTotalPlants} plantas</td>
+                      <td className="font-bold text-sky-400 text-xs">{r.lotIncidencePct}%</td>
+                      <td className="text-xs text-gray-400 max-w-xs truncate">{r.notes}</td>
                       <td>
                         <button 
                           onClick={() => handleDelete(r.id)} 
-                          className="text-red-400 hover:text-red-300 p-1"
+                          className="text-rose-400 hover:text-rose-300 p-1"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="8" className="text-center py-6 text-purple-300 font-mono">
+                    <td colSpan="8" className="text-center py-8 text-gray-400 font-mono text-xs">
                       No hay registros de enfermedades en plantas.
                     </td>
                   </tr>

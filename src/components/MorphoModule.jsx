@@ -1,12 +1,16 @@
 import React, { useState, useMemo } from 'react';
-import { PlusCircle, Zap, Trash2, Search, BarChart3, ChevronLeft, ChevronRight, Leaf, Target } from 'lucide-react';
+import { PlusCircle, Zap, Trash2, Search, BarChart3, ChevronLeft, ChevronRight, Leaf, Target, Layers, Tag, Calendar } from 'lucide-react';
 
 export default function MorphoModule({ records, setRecords }) {
-  // Config state
-  const [maxCapacity, setMaxCapacity] = useState(1000);
-  const [batchCount, setBatchCount] = useState(100);
+  // Config state - capacity up to 25,000
+  const [maxCapacity, setMaxCapacity] = useState(25000);
+  const [batchCount, setBatchCount] = useState(500);
+  const [batchBlockName, setBatchBlockName] = useState('Bloque A');
 
-  // Form State: 3 specific fields requested
+  // Form State
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [blockId, setBlockId] = useState('Bloque A');
+  const [treatment, setTreatment] = useState('T1 - Biocontrol');
   const [leaves, setLeaves] = useState('');
   const [diameter, setDiameter] = useState('');
   const [length, setLength] = useState('');
@@ -15,18 +19,25 @@ export default function MorphoModule({ records, setRecords }) {
 
   // Pagination & Filtering
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedBlockFilter, setSelectedBlockFilter] = useState('ALL');
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 20;
+  const pageSize = 25;
+
+  // Unique blocks list for filter dropdown
+  const uniqueBlocks = useMemo(() => {
+    const blocks = new Set(records.map(r => r.blockId || 'Sin Bloque'));
+    return Array.from(blocks);
+  }, [records]);
 
   // Manual record submission
   const handleAddRecord = (e) => {
     e.preventDefault();
     if (records.length >= maxCapacity) {
-      alert(`Has alcanzado el límite máximo configurado de ${maxCapacity} muestras.`);
+      alert(`Has alcanzado la capacidad máxima configurada de ${maxCapacity.toLocaleString()} muestras.`);
       return;
     }
     if (!leaves || !diameter || !length) {
-      alert('Por favor completa Número de hojas, Diámetro de la planta y Largo de la planta.');
+      alert('Por favor completa Número de hojas, Diámetro y Largo/Altura de la planta.');
       return;
     }
 
@@ -34,17 +45,19 @@ export default function MorphoModule({ records, setRecords }) {
     const newRec = {
       id: `m-${Date.now()}-${Math.random()}`,
       sampleNo: nextNo,
-      plantId: plantId || `PLT-${String(nextNo).padStart(4, '0')}`,
+      blockId: blockId || 'Bloque General',
+      treatment: treatment || 'Control',
+      plantId: plantId || `PLT-${String(nextNo).padStart(5, '0')}`,
       leaves: parseInt(leaves, 10),
       diameter: parseFloat(diameter).toFixed(2),
       height: parseFloat(length).toFixed(1),
-      date: new Date().toISOString().split('T')[0],
+      date: date || new Date().toISOString().split('T')[0],
       notes: notes || 'Entrada manual'
     };
 
     setRecords([newRec, ...records]);
 
-    // Reset form
+    // Reset fields
     setLeaves('');
     setDiameter('');
     setLength('');
@@ -52,27 +65,32 @@ export default function MorphoModule({ records, setRecords }) {
     setNotes('');
   };
 
-  // Quick Batch Generator
+  // Quick Batch Generator for large sampling (up to 25,000)
   const handleGenerateBatch = () => {
     const count = Math.min(Number(batchCount), maxCapacity - records.length);
     if (count <= 0) {
-      alert(`Límite de ${maxCapacity} alcanzado.`);
+      alert(`Límite máximo de ${maxCapacity.toLocaleString()} alcanzado.`);
       return;
     }
 
     const newBatch = [];
     const baseNo = records.length;
+    const currentBlock = batchBlockName.trim() || 'Bloque Lote';
+    const currentDate = new Date().toISOString().split('T')[0];
+
     for (let i = 0; i < count; i++) {
       const idx = baseNo + i + 1;
       newBatch.push({
         id: `m-batch-${Date.now()}-${i}`,
         sampleNo: idx,
-        plantId: `PLT-${String(idx).padStart(4, '0')}`,
-        leaves: Math.floor(6 + Math.random() * 12),
-        diameter: (2.5 + Math.random() * 6).toFixed(2),
-        height: (20 + Math.random() * 45).toFixed(1),
-        date: new Date().toISOString().split('T')[0],
-        notes: 'Generación por Lote de Campo'
+        blockId: currentBlock,
+        treatment: 'Tratamiento Campo',
+        plantId: `PLT-${String(idx).padStart(5, '0')}`,
+        leaves: Math.floor(6 + Math.random() * 14),
+        diameter: (2.5 + Math.random() * 6.5).toFixed(2),
+        height: (20 + Math.random() * 50).toFixed(1),
+        date: currentDate,
+        notes: `Muestra en Lote (${currentBlock})`
       });
     }
 
@@ -86,7 +104,7 @@ export default function MorphoModule({ records, setRecords }) {
 
   // Clear all records
   const handleClearAll = () => {
-    if (window.confirm('¿Seguro que deseas borrar todos los registros morfológicos?')) {
+    if (window.confirm('¿Seguro que deseas vaciar todas las muestras morfológicas registradas?')) {
       setRecords([]);
       setCurrentPage(1);
     }
@@ -94,14 +112,22 @@ export default function MorphoModule({ records, setRecords }) {
 
   // Filter & Pagination Calculations
   const filteredRecords = useMemo(() => {
-    if (!searchTerm) return records;
-    const term = searchTerm.toLowerCase();
-    return records.filter(r => 
-      r.plantId?.toLowerCase().includes(term) || 
-      String(r.sampleNo).includes(term) ||
-      r.notes?.toLowerCase().includes(term)
-    );
-  }, [records, searchTerm]);
+    let result = records;
+    if (selectedBlockFilter !== 'ALL') {
+      result = result.filter(r => (r.blockId || 'Sin Bloque') === selectedBlockFilter);
+    }
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      result = result.filter(r => 
+        r.plantId?.toLowerCase().includes(term) || 
+        r.blockId?.toLowerCase().includes(term) ||
+        r.treatment?.toLowerCase().includes(term) ||
+        String(r.sampleNo).includes(term) ||
+        r.notes?.toLowerCase().includes(term)
+      );
+    }
+    return result;
+  }, [records, searchTerm, selectedBlockFilter]);
 
   const totalPages = Math.ceil(filteredRecords.length / pageSize) || 1;
   const paginatedRecords = useMemo(() => {
@@ -111,10 +137,11 @@ export default function MorphoModule({ records, setRecords }) {
 
   // Statistical summary
   const stats = useMemo(() => {
-    if (records.length === 0) return { avgH: '0.0', avgD: '0.00', avgL: '0.0' };
+    if (records.length === 0) return { avgH: '0.0', avgD: '0.00', avgL: '0.0', blockCount: 0 };
     const heights = records.map(r => Number(r.height));
     const diameters = records.map(r => Number(r.diameter));
     const leavesList = records.map(r => Number(r.leaves));
+    const blocks = new Set(records.map(r => r.blockId));
 
     const sumH = heights.reduce((a, b) => a + b, 0);
     const sumD = diameters.reduce((a, b) => a + b, 0);
@@ -123,7 +150,8 @@ export default function MorphoModule({ records, setRecords }) {
     return {
       avgH: (sumH / records.length).toFixed(1),
       avgD: (sumD / records.length).toFixed(2),
-      avgL: (sumL / records.length).toFixed(1)
+      avgL: (sumL / records.length).toFixed(1),
+      blockCount: blocks.size
     };
   }, [records]);
 
@@ -134,8 +162,8 @@ export default function MorphoModule({ records, setRecords }) {
       {/* WINDOW 1 (Left): Formulario Morfológico */}
       <div className="navi-window w-96 shrink-0">
         <div className="navi-window-header">
-          <span className="font-mono text-xs text-yellow-400 flex items-center gap-1.5">
-            <PlusCircle className="w-3.5 h-3.5 text-green-400" /> MORPHO_INPUT_FORM.EXE
+          <span className="font-mono text-xs text-emerald-400 flex items-center gap-1.5 font-semibold">
+            <PlusCircle className="w-3.5 h-3.5 text-emerald-400" /> REGISTRO_MUESTRA_CAMPO.EXE
           </span>
           <div className="navi-window-controls">
             <div className="navi-win-btn">_</div>
@@ -145,63 +173,111 @@ export default function MorphoModule({ records, setRecords }) {
         </div>
 
         <div className="p-5">
-          <h2 className="text-lg font-bold text-yellow-400 mb-4 border-b border-purple-800 pb-2 flex items-center gap-2">
-            <Leaf className="w-5 h-5 text-green-400" /> REGISTRO DE PLANTA
+          <h2 className="text-base font-bold text-gray-100 mb-4 border-b border-gray-700 pb-2 flex items-center gap-2">
+            <Leaf className="w-4 h-4 text-emerald-400" /> TOMA DE DATOS EN CAMPO Y LAB
           </h2>
 
-          <form onSubmit={handleAddRecord} className="space-y-4 text-sm">
-            <div>
-              <label className="text-orange-400 font-bold">1. Número de hojas *</label>
-              <input 
-                type="number" 
-                placeholder="Ej. 12"
-                value={leaves}
-                onChange={(e) => setLeaves(e.target.value)}
-                className="w-full font-bold"
-                required
-              />
+          <form onSubmit={handleAddRecord} className="space-y-3.5 text-xs">
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-gray-300 font-medium">Fecha *</label>
+                <input 
+                  type="date" 
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  className="w-full text-xs"
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-emerald-400 font-medium">Bloque / Parcela *</label>
+                <input 
+                  type="text" 
+                  placeholder="Ej. Bloque 1"
+                  value={blockId}
+                  onChange={(e) => setBlockId(e.target.value)}
+                  className="w-full text-xs font-semibold"
+                  required
+                />
+              </div>
             </div>
 
             <div>
-              <label className="text-yellow-400 font-bold">2. Diámetro de la planta (cm) *</label>
-              <input 
-                type="number" 
-                step="0.01" 
-                placeholder="Ej. 5.8"
-                value={diameter}
-                onChange={(e) => setDiameter(e.target.value)}
-                className="w-full font-bold"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="text-green-400 font-bold">3. Largo de la planta (cm) *</label>
-              <input 
-                type="number" 
-                step="0.1" 
-                placeholder="Ej. 42.5"
-                value={length}
-                onChange={(e) => setLength(e.target.value)}
-                className="w-full font-bold"
-                required
-              />
-            </div>
-
-            <div>
-              <label>ID Planta (Opcional)</label>
+              <label className="text-gray-300 font-medium">Tratamiento / Ensayo</label>
               <input 
                 type="text" 
-                placeholder="Ej. PLT-0016"
+                placeholder="Ej. T1 - Bioestimulante"
+                value={treatment}
+                onChange={(e) => setTreatment(e.target.value)}
+                className="w-full text-xs"
+              />
+            </div>
+
+            <div className="grid grid-cols-3 gap-2">
+              <div>
+                <label className="text-amber-400 font-semibold">1. N° Hojas *</label>
+                <input 
+                  type="number" 
+                  placeholder="12"
+                  value={leaves}
+                  onChange={(e) => setLeaves(e.target.value)}
+                  className="w-full font-semibold text-xs"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-cyan-400 font-semibold">2. Diámetro (mm) *</label>
+                <input 
+                  type="number" 
+                  step="0.01" 
+                  placeholder="5.8"
+                  value={diameter}
+                  onChange={(e) => setDiameter(e.target.value)}
+                  className="w-full font-semibold text-xs"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-emerald-400 font-semibold">3. Largo (cm) *</label>
+                <input 
+                  type="number" 
+                  step="0.1" 
+                  placeholder="42.5"
+                  value={length}
+                  onChange={(e) => setLength(e.target.value)}
+                  className="w-full font-semibold text-xs"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-gray-300 font-medium">ID Planta / Etiqueta (Opcional)</label>
+              <input 
+                type="text" 
+                placeholder="Ej. PLT-00100"
                 value={plantId}
                 onChange={(e) => setPlantId(e.target.value)}
                 className="w-full font-mono text-xs"
               />
             </div>
 
+            <div>
+              <label className="text-gray-400">Observaciones</label>
+              <input 
+                type="text" 
+                placeholder="Ej. Vigor bueno, sin clorosis"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                className="w-full text-xs"
+              />
+            </div>
+
             <button 
               type="submit" 
-              className="btn-navi btn-navi-green w-full justify-center h-[42px] mt-2"
+              className="btn-navi btn-navi-green w-full justify-center h-[38px] mt-2 font-bold"
             >
               <PlusCircle className="w-4 h-4" /> REGISTRAR MUESTRA
             </button>
@@ -209,11 +285,11 @@ export default function MorphoModule({ records, setRecords }) {
         </div>
       </div>
 
-      {/* WINDOW 2 (Middle): Capacidad Máxima & Lotes */}
+      {/* WINDOW 2 (Middle): Capacidad Máxima (25,000) & Generación por Lotes */}
       <div className="navi-window w-80 shrink-0">
         <div className="navi-window-header">
-          <span className="font-mono text-xs text-green-400 flex items-center gap-1.5">
-            <Target className="w-3.5 h-3.5 text-yellow-400" /> SYSTEM_CAPACITY.CFG
+          <span className="font-mono text-xs text-sky-400 flex items-center gap-1.5 font-semibold">
+            <Target className="w-3.5 h-3.5 text-sky-400" /> CONFIG_CAPACIDAD_LOTES.CFG
           </span>
           <div className="navi-window-controls">
             <div className="navi-win-btn">_</div>
@@ -222,49 +298,75 @@ export default function MorphoModule({ records, setRecords }) {
           </div>
         </div>
 
-        <div className="p-4 space-y-5">
+        <div className="p-4 space-y-4">
           <div>
-            <label className="text-yellow-400 font-bold mb-1 block flex items-center gap-1.5">
-              <Target className="w-4 h-4 text-green-400" /> CAPACIDAD MÁXIMA MUESTRAS
+            <label className="text-gray-200 font-semibold mb-1 block flex items-center gap-1.5">
+              <Target className="w-4 h-4 text-emerald-400" /> CAPACIDAD MÁXIMA DE MUESTRAS
             </label>
             <select 
               value={maxCapacity} 
               onChange={(e) => setMaxCapacity(Number(e.target.value))}
-              className="w-full text-base font-bold text-green-400 mb-2"
+              className="w-full text-sm font-bold text-emerald-400 mb-2"
             >
-              <option value={100}>100 Muestras</option>
               <option value={500}>500 Muestras</option>
               <option value={1000}>1,000 Muestras</option>
-              <option value={3000}>3,000 Muestras</option>
               <option value={5000}>5,000 Muestras</option>
-              <option value={9000}>9,000 Muestras (Máximo)</option>
+              <option value={10000}>10,000 Muestras</option>
+              <option value={15000}>15,000 Muestras</option>
+              <option value={20000}>20,000 Muestras</option>
+              <option value={25000}>25,000 Muestras (Máximo Completo)</option>
             </select>
-            <p className="text-xs text-purple-300 font-mono">
-              Progreso: <span className="text-yellow-300 font-bold">{records.length}</span> / <span className="text-green-400 font-bold">{maxCapacity}</span> ({progressPct}%)
+
+            <div className="w-full bg-gray-800 rounded h-2 overflow-hidden mb-1 border border-gray-700">
+              <div 
+                className="bg-emerald-500 h-full transition-all duration-300" 
+                style={{ width: `${Math.min(Number(progressPct), 100)}%` }} 
+              />
+            </div>
+
+            <p className="text-xs text-gray-400 font-mono flex justify-between">
+              <span>Progreso:</span>
+              <span className="text-emerald-400 font-bold">{records.length.toLocaleString()} / {maxCapacity.toLocaleString()} ({progressPct}%)</span>
             </p>
           </div>
 
-          <div className="pt-4 border-t border-purple-800">
-            <label className="text-green-400 font-bold mb-2 block flex items-center gap-1.5">
-              <Zap className="w-4 h-4 text-yellow-400" /> GENERADOR DE LOTE
+          <div className="pt-3 border-t border-gray-700">
+            <label className="text-emerald-400 font-semibold mb-2 block flex items-center gap-1.5">
+              <Zap className="w-4 h-4 text-amber-400" /> GENERADOR MASIVO POR BLOQUES
             </label>
-            <div className="space-y-3">
-              <input 
-                type="number" 
-                min="1" 
-                max="9000" 
-                value={batchCount} 
-                onChange={(e) => setBatchCount(e.target.value)}
-                placeholder="100"
-                className="w-full text-center font-bold"
-              />
+            <div className="space-y-2.5">
+              <div>
+                <label className="text-[11px] text-gray-400">Nombre de Bloque / Parcela</label>
+                <input 
+                  type="text"
+                  value={batchBlockName}
+                  onChange={(e) => setBatchBlockName(e.target.value)}
+                  placeholder="Bloque A"
+                  className="w-full text-xs font-semibold"
+                />
+              </div>
+
+              <div>
+                <label className="text-[11px] text-gray-400">Cantidad de Muestras a Generar</label>
+                <input 
+                  type="number" 
+                  min="1" 
+                  max="25000" 
+                  value={batchCount} 
+                  onChange={(e) => setBatchCount(e.target.value)}
+                  placeholder="500"
+                  className="w-full text-center font-bold text-xs"
+                />
+              </div>
+
               <button 
                 onClick={handleGenerateBatch} 
-                className="btn-navi btn-navi-green text-xs w-full justify-center"
+                className="btn-navi btn-navi-green text-xs w-full justify-center font-bold"
                 disabled={records.length >= maxCapacity}
               >
-                <Zap className="w-4 h-4" /> GENERAR {batchCount} MUESTRAS
+                <Zap className="w-4 h-4" /> GENERAR {Number(batchCount).toLocaleString()} MUESTRAS
               </button>
+
               <button 
                 onClick={handleClearAll} 
                 className="btn-navi btn-navi-orange text-xs w-full justify-center"
@@ -276,11 +378,11 @@ export default function MorphoModule({ records, setRecords }) {
         </div>
       </div>
 
-      {/* WINDOW 3 (Right): Matriz de Datos Morfológicos & Estadísticas */}
-      <div className="navi-window w-[540px] shrink-0">
+      {/* WINDOW 3 (Right): Matriz de Datos & Filtros de Bloques */}
+      <div className="navi-window w-[560px] shrink-0">
         <div className="navi-window-header">
-          <span className="font-mono text-xs text-cyan-400 flex items-center gap-1.5">
-            <BarChart3 className="w-3.5 h-3.5 text-yellow-400" /> MORPHO_DATA_MATRIX.GRID
+          <span className="font-mono text-xs text-emerald-400 flex items-center gap-1.5 font-semibold">
+            <BarChart3 className="w-3.5 h-3.5 text-emerald-400" /> MATRIZ_DATOS_CAMPO.GRID
           </span>
           <div className="navi-window-controls">
             <div className="navi-win-btn">_</div>
@@ -292,49 +394,64 @@ export default function MorphoModule({ records, setRecords }) {
         <div className="p-4 space-y-4">
           {/* Summary Stats Cards */}
           <div className="grid grid-cols-4 gap-2 font-mono text-center text-xs">
-            <div className="bg-purple-950/80 p-2 border border-purple-700 rounded">
-              <span className="text-purple-300 block text-[10px]">HOJAS PROM.</span>
-              <span className="text-sm font-bold text-orange-400">{stats.avgL}</span>
+            <div className="bg-gray-900/90 p-2 border border-gray-700 rounded">
+              <span className="text-gray-400 block text-[10px]">TOTAL BLOQUES</span>
+              <span className="text-sm font-bold text-sky-400">{stats.blockCount}</span>
             </div>
-            <div className="bg-purple-950/80 p-2 border border-purple-700 rounded">
-              <span className="text-purple-300 block text-[10px]">DIÁM. (CM)</span>
-              <span className="text-sm font-bold text-yellow-400">{stats.avgD}</span>
+            <div className="bg-gray-900/90 p-2 border border-gray-700 rounded">
+              <span className="text-gray-400 block text-[10px]">HOJAS PROM.</span>
+              <span className="text-sm font-bold text-amber-400">{stats.avgL}</span>
             </div>
-            <div className="bg-purple-950/80 p-2 border border-purple-700 rounded">
-              <span className="text-purple-300 block text-[10px]">LARGO (CM)</span>
-              <span className="text-sm font-bold text-green-400">{stats.avgH}</span>
+            <div className="bg-gray-900/90 p-2 border border-gray-700 rounded">
+              <span className="text-gray-400 block text-[10px]">DIÁM. (MM)</span>
+              <span className="text-sm font-bold text-cyan-400">{stats.avgD}</span>
             </div>
-            <div className="bg-purple-950/80 p-2 border border-purple-700 rounded">
-              <span className="text-purple-300 block text-[10px]">TOTAL</span>
-              <span className="text-sm font-bold text-cyan-400">{records.length}</span>
+            <div className="bg-gray-900/90 p-2 border border-gray-700 rounded">
+              <span className="text-gray-400 block text-[10px]">LARGO (CM)</span>
+              <span className="text-sm font-bold text-emerald-400">{stats.avgH}</span>
             </div>
           </div>
 
           <div className="flex justify-between items-center gap-2">
-            <h3 className="text-xs font-bold text-yellow-400 flex items-center gap-1.5">
-              <BarChart3 className="w-4 h-4 text-green-400" /> REGISTROS MORFOLÓGICOS
-            </h3>
+            {/* Filter by Block */}
+            <div className="flex items-center gap-2">
+              <Layers className="w-4 h-4 text-emerald-400 shrink-0" />
+              <select 
+                value={selectedBlockFilter}
+                onChange={(e) => { setSelectedBlockFilter(e.target.value); setCurrentPage(1); }}
+                className="text-xs py-1 text-gray-200 bg-gray-900 border-gray-700"
+              >
+                <option value="ALL">Todos los Bloques ({records.length.toLocaleString()})</option>
+                {uniqueBlocks.map(b => (
+                  <option key={b} value={b}>{b}</option>
+                ))}
+              </select>
+            </div>
+
             <div className="relative w-44">
               <input 
                 type="text" 
-                placeholder="Buscar..."
+                placeholder="Buscar muestra..."
                 value={searchTerm}
                 onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-                className="w-full pl-7 py-0.5 text-xs font-mono"
+                className="w-full pl-7 py-1 text-xs font-mono bg-gray-900 border-gray-700"
               />
-              <Search className="w-3.5 h-3.5 text-purple-400 absolute left-2 top-1.5" />
+              <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2 top-2" />
             </div>
           </div>
 
-          <div className="overflow-x-auto border border-purple-800 h-[220px]">
+          {/* Table displaying samples */}
+          <div className="overflow-x-auto border border-gray-700 h-[260px] rounded">
             <table className="grid-table">
               <thead>
                 <tr>
                   <th>N°</th>
+                  <th>Bloque</th>
                   <th>ID Planta</th>
-                  <th>N° Hojas</th>
-                  <th>Diámetro (cm)</th>
-                  <th>Largo (cm)</th>
+                  <th>Hojas</th>
+                  <th>Diámetro</th>
+                  <th>Largo</th>
+                  <th>Fecha</th>
                   <th>Acción</th>
                 </tr>
               </thead>
@@ -342,15 +459,17 @@ export default function MorphoModule({ records, setRecords }) {
                 {paginatedRecords.length > 0 ? (
                   paginatedRecords.map((r) => (
                     <tr key={r.id}>
-                      <td className="font-bold text-yellow-300 text-xs">#{r.sampleNo}</td>
-                      <td className="font-mono text-cyan-300 text-xs">{r.plantId}</td>
-                      <td className="font-bold text-orange-400 text-xs">{r.leaves}</td>
-                      <td className="font-bold text-yellow-400 text-xs">{r.diameter}</td>
-                      <td className="font-bold text-green-400 text-xs">{r.height}</td>
+                      <td className="font-bold text-amber-400 text-xs">#{r.sampleNo}</td>
+                      <td className="font-mono text-emerald-400 text-xs font-semibold">{r.blockId || 'General'}</td>
+                      <td className="font-mono text-sky-300 text-xs">{r.plantId}</td>
+                      <td className="font-semibold text-gray-200 text-xs">{r.leaves}</td>
+                      <td className="font-semibold text-cyan-300 text-xs">{r.diameter} mm</td>
+                      <td className="font-semibold text-emerald-300 text-xs">{r.height} cm</td>
+                      <td className="text-gray-400 text-[11px] font-mono">{r.date}</td>
                       <td>
                         <button 
                           onClick={() => handleDeleteRecord(r.id)} 
-                          className="text-red-400 hover:text-red-300 p-1"
+                          className="text-rose-400 hover:text-rose-300 p-1"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -359,8 +478,8 @@ export default function MorphoModule({ records, setRecords }) {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="6" className="text-center py-6 text-purple-300 font-mono text-xs">
-                      No hay muestras registradas.
+                    <td colSpan="8" className="text-center py-8 text-gray-400 font-mono text-xs">
+                      No hay muestras registradas en este bloque.
                     </td>
                   </tr>
                 )}
@@ -370,8 +489,8 @@ export default function MorphoModule({ records, setRecords }) {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex justify-between items-center text-[11px] text-purple-300 font-mono pt-1">
-              <span>Pág {currentPage}/{totalPages}</span>
+            <div className="flex justify-between items-center text-[11px] text-gray-400 font-mono pt-1">
+              <span>Mostrando {paginatedRecords.length} de {filteredRecords.length.toLocaleString()} muestras (Pág {currentPage}/{totalPages})</span>
               <div className="flex gap-2">
                 <button 
                   onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}

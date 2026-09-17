@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PlusCircle, Trash2, PieChart, Info, Microscope, FlaskConical } from 'lucide-react';
+import { PlusCircle, Trash2, PieChart, Microscope, FlaskConical } from 'lucide-react';
 
 export default function FungalModule({ records, setRecords }) {
   // Form State
@@ -58,8 +58,8 @@ export default function FungalModule({ records, setRecords }) {
       {/* WINDOW 1 (Left): Formulario de Evaluación Fúngica */}
       <div className="navi-window w-96 shrink-0">
         <div className="navi-window-header">
-          <span className="font-mono text-xs text-yellow-300 flex items-center gap-1.5">
-            <Microscope className="w-3.5 h-3.5 text-green-400" /> FUNGAL_ANALYZER.EXE
+          <span className="font-mono text-xs text-emerald-400 flex items-center gap-1.5 font-semibold">
+            <Microscope className="w-3.5 h-3.5 text-emerald-400" /> ANÁLISIS_FÚNGICO_LAB.EXE
           </span>
           <div className="navi-window-controls">
             <div className="navi-win-btn">_</div>
@@ -69,13 +69,13 @@ export default function FungalModule({ records, setRecords }) {
         </div>
 
         <div className="p-5">
-          <h2 className="text-lg font-bold text-yellow-400 mb-4 flex items-center gap-2 border-b border-purple-800 pb-2">
-            <PieChart className="w-5 h-5 text-green-400" /> EVALUACIÓN DE CORTES RADICULARES
+          <h2 className="text-base font-bold text-gray-100 mb-4 flex items-center gap-2 border-b border-gray-700 pb-2">
+            <PieChart className="w-4 h-4 text-emerald-400" /> CORTES DE RAÍZ Y COLONIZACIÓN
           </h2>
 
-          <form onSubmit={handleAddRecord} className="space-y-3.5 text-sm">
+          <form onSubmit={handleAddRecord} className="space-y-3.5 text-xs">
             <div>
-              <label>Fecha de Evaluación</label>
+              <label className="text-gray-300 font-medium">Fecha de Evaluación *</label>
               <input 
                 type="date" 
                 value={date}
@@ -86,7 +86,7 @@ export default function FungalModule({ records, setRecords }) {
             </div>
 
             <div>
-              <label>Identificador Muestra / Raíz</label>
+              <label className="text-gray-300 font-medium">Identificador Muestra / Raíz</label>
               <input 
                 type="text" 
                 placeholder="Ej. Raíz Lote 1 - Rep. A"
@@ -97,7 +97,7 @@ export default function FungalModule({ records, setRecords }) {
             </div>
 
             <div>
-              <label className="text-yellow-400 font-bold">Total Cortes Evaluados (N) *</label>
+              <label className="text-gray-200 font-semibold">Total Cortes Evaluados (N) *</label>
               <input 
                 type="number" 
                 min="1"
@@ -110,12 +110,12 @@ export default function FungalModule({ records, setRecords }) {
             </div>
 
             <div>
-              <label className="text-purple-300 font-bold">Cortes con Micorrizas (nmico) *</label>
+              <label className="text-sky-400 font-semibold">Cortes con Micorrizas (VAM) *</label>
               <input 
                 type="number" 
                 min="0"
                 max={totalCuts || undefined}
-                placeholder="Ej. 35 con micorrizas"
+                placeholder="Ej. 35"
                 value={micoCuts}
                 onChange={(e) => setMicoCuts(e.target.value)}
                 className="w-full font-bold text-xs"
@@ -124,12 +124,12 @@ export default function FungalModule({ records, setRecords }) {
             </div>
 
             <div>
-              <label className="text-green-400 font-bold">Cortes con Trichoderma (ntricho) *</label>
+              <label className="text-emerald-400 font-semibold">Cortes con Trichoderma spp. *</label>
               <input 
                 type="number" 
                 min="0"
                 max={totalCuts || undefined}
-                placeholder="Ej. 20 con Trichoderma"
+                placeholder="Ej. 20"
                 value={trichoCuts}
                 onChange={(e) => setTrichoCuts(e.target.value)}
                 className="w-full font-bold text-xs"
@@ -137,7 +137,18 @@ export default function FungalModule({ records, setRecords }) {
               />
             </div>
 
-            <button type="submit" className="btn-navi btn-navi-green w-full justify-center h-[40px] mt-2">
+            <div>
+              <label className="text-gray-400">Observaciones Lab</label>
+              <input 
+                type="text" 
+                placeholder="Ej. Tinción azul de tripano limpia"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                className="w-full text-xs"
+              />
+            </div>
+
+            <button type="submit" className="btn-navi btn-navi-green w-full justify-center h-[38px] mt-2 font-bold">
               <PlusCircle className="w-4 h-4" /> REGISTRAR DATO FÚNGICO
             </button>
           </form>
@@ -147,8 +158,8 @@ export default function FungalModule({ records, setRecords }) {
       {/* WINDOW 2 (Middle): Gauges y Fórmulas */}
       <div className="navi-window w-80 shrink-0">
         <div className="navi-window-header">
-          <span className="font-mono text-xs text-purple-300 flex items-center gap-1.5">
-            <FlaskConical className="w-3.5 h-3.5 text-yellow-400" /> MATH_SPECIFICATIONS.DOC
+          <span className="font-mono text-xs text-gray-300 flex items-center gap-1.5 font-semibold">
+            <FlaskConical className="w-3.5 h-3.5 text-sky-400" /> CÁLCULO_COLONIZACIÓN.SYS
           </span>
           <div className="navi-window-controls">
             <div className="navi-win-btn">_</div>
@@ -158,35 +169,35 @@ export default function FungalModule({ records, setRecords }) {
 
         <div className="p-4 space-y-4">
           {numTotal > 0 ? (
-            <div className="space-y-4 p-3 bg-purple-950/70 border border-purple-700 rounded">
+            <div className="space-y-4 p-3 bg-gray-900 border border-gray-800 rounded">
               <div>
                 <div className="flex justify-between text-xs mb-1 font-mono">
-                  <span className="text-purple-300 font-bold">% MICORRIZAS (VAM)</span>
-                  <span className="text-purple-300 font-bold">{currentMicoPct}%</span>
+                  <span className="text-sky-400 font-bold">% MICORRIZAS (VAM)</span>
+                  <span className="text-sky-400 font-bold">{currentMicoPct}%</span>
                 </div>
-                <div className="w-full bg-purple-900 h-3.5 rounded border border-purple-500 overflow-hidden">
-                  <div className="bg-purple-500 h-full transition-all duration-300" style={{ width: `${Math.min(currentMicoPct, 100)}%` }} />
+                <div className="w-full bg-gray-800 h-3 rounded overflow-hidden border border-gray-700">
+                  <div className="bg-sky-400 h-full transition-all duration-300" style={{ width: `${Math.min(Number(currentMicoPct), 100)}%` }} />
                 </div>
               </div>
 
               <div>
                 <div className="flex justify-between text-xs mb-1 font-mono">
-                  <span className="text-green-400 font-bold">% TRICHODERMA SPP.</span>
-                  <span className="text-green-400 font-bold">{currentTrichoPct}%</span>
+                  <span className="text-emerald-400 font-bold">% TRICHODERMA SPP.</span>
+                  <span className="text-emerald-400 font-bold">{currentTrichoPct}%</span>
                 </div>
-                <div className="w-full bg-purple-900 h-3.5 rounded border border-green-500 overflow-hidden">
-                  <div className="bg-green-400 h-full transition-all duration-300" style={{ width: `${Math.min(currentTrichoPct, 100)}%` }} />
+                <div className="w-full bg-gray-800 h-3 rounded overflow-hidden border border-gray-700">
+                  <div className="bg-emerald-400 h-full transition-all duration-300" style={{ width: `${Math.min(Number(currentTrichoPct), 100)}%` }} />
                 </div>
               </div>
             </div>
           ) : (
-            <div className="p-3 bg-purple-950/50 border border-purple-800 rounded text-center text-xs text-purple-300 font-mono">
-              Ingresa cortes evaluados para calcular los porcentajes en tiempo real.
+            <div className="p-4 bg-gray-900 border border-gray-800 rounded text-center text-xs text-gray-400 font-mono">
+              Ingresa el número total de cortes evaluados para calcular colonización en tiempo real.
             </div>
           )}
 
-          <div className="text-xs text-purple-200 border-l-4 border-yellow-400 p-3 bg-purple-950/40 rounded space-y-1">
-            <span className="font-bold text-yellow-400 block mb-1">FÓRMULAS EMPLEADAS</span>
+          <div className="text-xs text-gray-300 border-l-2 border-emerald-400 p-3 bg-gray-900 rounded space-y-1">
+            <span className="font-bold text-emerald-400 block mb-1">METODOLOGÍA DE CÁLCULO</span>
             <p>• <strong>% Micorrizas:</strong> (Cortes Micorrizas ÷ Cortes Totales) × 100</p>
             <p>• <strong>% Trichoderma:</strong> (Cortes Trichoderma ÷ Cortes Totales) × 100</p>
           </div>
@@ -196,8 +207,8 @@ export default function FungalModule({ records, setRecords }) {
       {/* WINDOW 3 (Right): Historial de Evaluaciones Fúngicas */}
       <div className="navi-window w-[520px] shrink-0">
         <div className="navi-window-header">
-          <span className="font-mono text-xs text-green-400 flex items-center gap-1.5">
-            <PieChart className="w-3.5 h-3.5 text-yellow-400" /> FUNGAL_EVALUATIONS_MATRIX.GRID
+          <span className="font-mono text-xs text-emerald-400 flex items-center gap-1.5 font-semibold">
+            <PieChart className="w-3.5 h-3.5 text-emerald-400" /> HISTORIAL_COLONIZACIÓN.GRID
           </span>
           <div className="navi-window-controls">
             <div className="navi-win-btn">_</div>
@@ -207,11 +218,11 @@ export default function FungalModule({ records, setRecords }) {
         </div>
 
         <div className="p-4">
-          <h3 className="text-xs font-bold text-yellow-400 mb-3">
-            HISTORIAL DE COLONIZACIÓN ({records.length})
+          <h3 className="text-xs font-bold text-gray-200 mb-3">
+            EVALUACIONES REGISTRADAS ({records.length})
           </h3>
 
-          <div className="overflow-x-auto border border-purple-800 h-[280px]">
+          <div className="overflow-x-auto border border-gray-700 h-[280px] rounded">
             <table className="grid-table">
               <thead>
                 <tr>
@@ -231,13 +242,13 @@ export default function FungalModule({ records, setRecords }) {
 
                     return (
                       <tr key={r.id}>
-                        <td className="text-xs font-mono text-purple-300">{r.date}</td>
-                        <td className="font-bold text-yellow-300 text-xs">{r.sampleName}</td>
-                        <td className="text-cyan-400 font-bold text-xs">{r.totalCuts}</td>
-                        <td className="font-bold text-purple-300 text-xs">{mPct}%</td>
-                        <td className="font-bold text-green-400 text-xs">{tPct}%</td>
+                        <td className="text-xs font-mono text-gray-400">{r.date}</td>
+                        <td className="font-semibold text-gray-200 text-xs">{r.sampleName}</td>
+                        <td className="text-sky-300 font-bold text-xs">{r.totalCuts}</td>
+                        <td className="font-bold text-sky-400 text-xs">{mPct}%</td>
+                        <td className="font-bold text-emerald-400 text-xs">{tPct}%</td>
                         <td>
-                          <button onClick={() => handleDelete(r.id)} className="text-red-400 hover:text-red-300 p-1">
+                          <button onClick={() => handleDelete(r.id)} className="text-rose-400 hover:text-rose-300 p-1">
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         </td>
@@ -246,7 +257,7 @@ export default function FungalModule({ records, setRecords }) {
                   })
                 ) : (
                   <tr>
-                    <td colSpan="6" className="text-center py-6 text-purple-300 font-mono text-xs">
+                    <td colSpan="6" className="text-center py-8 text-gray-400 font-mono text-xs">
                       No hay evaluaciones fúngicas registradas.
                     </td>
                   </tr>

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Sprout, Microscope, CloudRain, ShieldAlert, Sparkles, FolderOpen, RotateCw } from 'lucide-react';
+import { Sprout, Microscope, CloudRain, ShieldAlert, FolderOpen } from 'lucide-react';
 import gsap from 'gsap';
 
 export default function TcgCarousel({ onSelectModule }) {
@@ -9,38 +9,38 @@ export default function TcgCarousel({ onSelectModule }) {
   const packs = [
     {
       id: 'morpho',
-      title: 'PARÁMETROS MORFOLÓGICOS',
-      subtitle: 'Altura (cm), Diámetro Basal (mm), N° Hojas',
-      badge: '0-9000 MUESTRAS',
-      color: '#00ff88',
-      glowColor: 'rgba(0, 255, 136, 0.4)',
+      title: 'MORFOLOGÍA DE PLANTA',
+      subtitle: 'N° Hojas, Diámetro Basal (mm), Largo (cm), Bloques & Tratamientos',
+      badge: 'HASTA 25,000 MUESTRAS',
+      color: '#10b981',
+      glowColor: 'rgba(16, 185, 129, 0.25)',
       icon: Sprout
     },
     {
       id: 'fungal',
       title: 'MICORRIZAS Y TRICHODERMA (%)',
-      subtitle: 'Colonización Radicular & Biocontrol',
-      badge: 'VAM & TRICHODERMA',
-      color: '#bd00ff',
-      glowColor: 'rgba(189, 0, 255, 0.4)',
+      subtitle: 'Colonización Radicular, Cortes Stereomicroscópicos & Biocontrol',
+      badge: 'COLONIZACIÓN RADICULAR',
+      color: '#38bdf8',
+      glowColor: 'rgba(56, 189, 248, 0.25)',
       icon: Microscope
     },
     {
       id: 'climate',
-      title: 'CLIMA INTEGRAL',
-      subtitle: 'Temperatura (°C), Lluvia (mm) Log',
-      badge: 'DATOS CLIMÁTICOS',
-      color: '#00e5ff',
-      glowColor: 'rgba(0, 229, 255, 0.4)',
+      title: 'DATOS CLIMÁTICOS',
+      subtitle: 'Temperaturas (°C), Precipitación (mm) & Alertas Ambientales',
+      badge: 'ESTACIÓN & CAMPO',
+      color: '#fbbf24',
+      glowColor: 'rgba(251, 191, 36, 0.25)',
       icon: CloudRain
     },
     {
       id: 'disease',
-      title: 'ENFERMEDADES EN PLANTAS (%)',
-      subtitle: 'Severidad Foliar (0-5) & Incidencia',
-      badge: 'FITOSANIDAD LOTE',
-      color: '#ff6600',
-      glowColor: 'rgba(255, 102, 0, 0.4)',
+      title: 'FITOSANIDAD Y EVALUACIÓN',
+      subtitle: 'Severidad Foliar (Escala 0-5) & Incidencia % en Lotes',
+      badge: 'FITOSANIDAD INTEGRAL',
+      color: '#f43f5e',
+      glowColor: 'rgba(244, 63, 94, 0.25)',
       icon: ShieldAlert
     }
   ];
@@ -50,8 +50,8 @@ export default function TcgCarousel({ onSelectModule }) {
     cardsRef.current.forEach((card, index) => {
       if (card) {
         gsap.to(card, {
-          y: '+=14',
-          duration: 2.2 + index * 0.3,
+          y: '+=10',
+          duration: 2.5 + index * 0.3,
           repeat: -1,
           yoyo: true,
           ease: 'sine.inOut',
@@ -70,14 +70,14 @@ export default function TcgCarousel({ onSelectModule }) {
     const x = e.clientX - rect.left - rect.width / 2;
     const y = e.clientY - rect.top - rect.height / 2;
 
-    const rotateX = (-y / (rect.height / 2)) * 18;
-    const rotateY = (x / (rect.width / 2)) * 18;
+    const rotateX = (-y / (rect.height / 2)) * 12;
+    const rotateY = (x / (rect.width / 2)) * 12;
 
     gsap.to(card, {
       rotateX,
       rotateY,
-      scale: 1.05,
-      duration: 0.25,
+      scale: 1.03,
+      duration: 0.2,
       ease: 'power1.out'
     });
   };
@@ -90,7 +90,7 @@ export default function TcgCarousel({ onSelectModule }) {
       rotateX: 0,
       rotateY: 0,
       scale: 1,
-      duration: 0.5,
+      duration: 0.4,
       ease: 'power2.out'
     });
   };
@@ -99,9 +99,9 @@ export default function TcgCarousel({ onSelectModule }) {
     const card = cardsRef.current[activeCardIndex];
     if (card) {
       gsap.to(card, {
-        scale: 1.2,
+        scale: 1.15,
         opacity: 0,
-        duration: 0.4,
+        duration: 0.3,
         onComplete: () => {
           onSelectModule(moduleName);
         }
@@ -114,16 +114,16 @@ export default function TcgCarousel({ onSelectModule }) {
   return (
     <div className="w-full flex flex-col items-center justify-center py-6 select-none font-mono">
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-[#00ff88] tracking-widest flex items-center justify-center gap-2">
-          <Sparkles className="w-6 h-6 text-[#00e5ff] wired-pulse" /> CATÁLOGO DE SOBRES AGRO NAVI 3D
+        <h2 className="text-xl font-bold text-emerald-400 tracking-wide">
+          VISTA DE MÓDULOS DE RECOLECCIÓN
         </h2>
-        <p className="text-xs text-purple-300 mt-1">
-          Haz clic en un sobre para enfocarlo | Haz doble clic o presiona [ ABRIR SOBRE ] para ingresar datos
+        <p className="text-xs text-gray-400 mt-1">
+          Haz clic en un módulo para enfocarlo | Haz doble clic o presiona [ INGRESAR AL MÓDULO ]
         </p>
       </div>
 
       {/* 3D TCG Card Stack Carousel */}
-      <div className="relative w-full max-w-5xl h-[440px] flex items-center justify-center perspective-[1200px]">
+      <div className="relative w-full max-w-5xl h-[420px] flex items-center justify-center perspective-[1200px]">
         {packs.map((pack, index) => {
           const Icon = pack.icon;
           const isActive = index === activeCardIndex;
@@ -139,17 +139,17 @@ export default function TcgCarousel({ onSelectModule }) {
               onMouseLeave={() => handleMouseLeave(index)}
               style={{
                 borderColor: pack.color,
-                boxShadow: isActive ? `0 0 35px ${pack.glowColor}` : '0 10px 25px rgba(0,0,0,0.8)',
+                boxShadow: isActive ? `0 0 25px ${pack.glowColor}` : '0 8px 20px rgba(0,0,0,0.6)',
                 transformStyle: 'preserve-3d',
                 zIndex: isActive ? 40 : 30 - Math.abs(offset) * 10
               }}
-              className={`absolute w-72 h-[380px] bg-[#120826] border-2 rounded-xl p-5 cursor-pointer flex flex-col justify-between transition-all duration-500 navi-window ${
-                isActive ? 'scale-105 border-opacity-100' : 'opacity-70 scale-95 border-opacity-40 hover:opacity-100'
+              className={`absolute w-72 h-[370px] bg-[#111827] border rounded-xl p-5 cursor-pointer flex flex-col justify-between transition-all duration-400 navi-window ${
+                isActive ? 'scale-105 border-opacity-100' : 'opacity-65 scale-95 border-opacity-30 hover:opacity-100'
               }`}
             >
               {/* Card Header */}
-              <div className="flex justify-between items-center border-b border-purple-800 pb-2">
-                <span className="text-[10px] font-mono text-purple-300">SOBRE #{index + 1}</span>
+              <div className="flex justify-between items-center border-b border-gray-700 pb-2">
+                <span className="text-[10px] font-mono text-gray-400">MÓDULO #{index + 1}</span>
                 <span 
                   className="text-[10px] px-2 py-0.5 rounded font-bold border"
                   style={{ color: pack.color, borderColor: pack.color }}
@@ -161,27 +161,27 @@ export default function TcgCarousel({ onSelectModule }) {
               {/* Card Art Area */}
               <div className="flex flex-col items-center justify-center my-auto py-4">
                 <div 
-                  className="w-20 h-20 rounded-full border-2 flex items-center justify-center mb-4 transition-all duration-300"
-                  style={{ borderColor: pack.color, backgroundColor: `${pack.color}15`, boxShadow: `0 0 20px ${pack.glowColor}` }}
+                  className="w-16 h-16 rounded-full border flex items-center justify-center mb-4 transition-all duration-300"
+                  style={{ borderColor: pack.color, backgroundColor: `${pack.color}15` }}
                 >
-                  <Icon className="w-10 h-10" style={{ color: pack.color }} />
+                  <Icon className="w-8 h-8" style={{ color: pack.color }} />
                 </div>
-                <h3 className="text-base font-bold text-center text-white tracking-wider" style={{ color: pack.color }}>
+                <h3 className="text-sm font-bold text-center text-white tracking-wide" style={{ color: pack.color }}>
                   {pack.title}
                 </h3>
-                <p className="text-xs text-gray-400 text-center mt-2 font-serif">
+                <p className="text-xs text-gray-400 text-center mt-2 font-sans leading-relaxed">
                   {pack.subtitle}
                 </p>
               </div>
 
               {/* Card Footer Actions */}
-              <div className="pt-3 border-t border-purple-800/80 flex flex-col gap-2">
+              <div className="pt-3 border-t border-gray-700/80 flex flex-col gap-2">
                 <button
                   onClick={(e) => { e.stopPropagation(); handleOpenPack(pack.id); }}
-                  className="btn-navi w-full justify-center text-xs py-2"
+                  className="btn-navi w-full justify-center text-xs py-2 font-bold"
                   style={{ backgroundColor: `${pack.color}20`, borderColor: pack.color, color: pack.color }}
                 >
-                  <FolderOpen className="w-4 h-4" /> [ ABRIR SOBRE ]
+                  <FolderOpen className="w-4 h-4" /> [ INGRESAR AL MÓDULO ]
                 </button>
               </div>
             </div>
@@ -190,15 +190,15 @@ export default function TcgCarousel({ onSelectModule }) {
       </div>
 
       {/* Carousel Navigation Indicator Dots */}
-      <div className="flex items-center gap-3 mt-6">
+      <div className="flex items-center gap-2.5 mt-6">
         {packs.map((p, idx) => (
           <button
             key={p.id}
             onClick={() => setActiveTabCard(idx)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
               idx === activeCardIndex 
-                ? 'bg-[#00ff88] scale-125 shadow-[0_0_10px_#00ff88]' 
-                : 'bg-purple-900 border border-purple-600 hover:bg-purple-700'
+                ? 'bg-emerald-400 scale-125' 
+                : 'bg-gray-700 hover:bg-gray-500'
             }`}
           />
         ))}

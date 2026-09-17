@@ -60,8 +60,8 @@ export default function ClimateSanityModule({ records, setRecords }) {
       {/* WINDOW 1 (Left): Formulario Registro Agroclimático */}
       <div className="navi-window w-96 shrink-0">
         <div className="navi-window-header">
-          <span className="font-mono text-xs text-cyan-400 flex items-center gap-1.5">
-            <CloudRain className="w-3.5 h-3.5 text-yellow-400" /> CLIMATE_LOG_FORM.EXE
+          <span className="font-mono text-xs text-sky-400 flex items-center gap-1.5 font-semibold">
+            <CloudRain className="w-3.5 h-3.5 text-sky-400" /> CLIMA_REGISTRO.EXE
           </span>
           <div className="navi-window-controls">
             <div className="navi-win-btn">_</div>
@@ -71,76 +71,76 @@ export default function ClimateSanityModule({ records, setRecords }) {
         </div>
 
         <div className="p-5">
-          <h2 className="text-lg font-bold text-yellow-400 mb-4 flex items-center gap-2 border-b border-purple-800 pb-2">
-            <Calendar className="w-5 h-5 text-cyan-400" /> REGISTRO AGROCLIMÁTICO
+          <h2 className="text-base font-bold text-gray-100 mb-4 flex items-center gap-2 border-b border-gray-700 pb-2">
+            <Calendar className="w-4 h-4 text-sky-400" /> DATO CLIMÁTICO Y FITOSANITARIO
           </h2>
 
           <form onSubmit={handleAddRecord} className="space-y-3 text-xs">
             <div>
-              <label>Fecha de Registro *</label>
+              <label className="text-gray-300 font-medium">Fecha de Registro *</label>
               <input 
                 type="date" 
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full"
+                className="w-full text-xs"
                 required
               />
             </div>
 
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="text-cyan-400 font-bold">Temp. Mín (°C) *</label>
+                <label className="text-sky-400 font-semibold">Temp. Mín (°C) *</label>
                 <input 
                   type="number" 
                   step="0.1"
                   placeholder="Ej. 18.5"
                   value={tempMin}
                   onChange={(e) => setTempMin(e.target.value)}
-                  className="w-full font-bold"
+                  className="w-full font-semibold text-xs"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-orange-400 font-bold">Temp. Máx (°C) *</label>
+                <label className="text-amber-400 font-semibold">Temp. Máx (°C) *</label>
                 <input 
                   type="number" 
                   step="0.1"
                   placeholder="Ej. 30.2"
                   value={tempMax}
                   onChange={(e) => setTempMax(e.target.value)}
-                  className="w-full font-bold"
+                  className="w-full font-semibold text-xs"
                   required
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-cyan-400 font-bold">Lluvia / Precipitación (mm) *</label>
+              <label className="text-sky-400 font-semibold">Lluvia / Precipitación (mm) *</label>
               <input 
                 type="number" 
                 step="0.1"
                 placeholder="Ej. 24.5 mm"
                 value={rainMm}
                 onChange={(e) => setRainMm(e.target.value)}
-                className="w-full font-bold"
+                className="w-full font-semibold text-xs"
                 required
               />
             </div>
 
             <div>
-              <label className="text-yellow-400 font-bold">Enfermedad Foliar Observada</label>
+              <label className="text-gray-200 font-medium">Enfermedad Foliar Observada</label>
               <input 
                 type="text" 
                 placeholder="Ej. Roya, Monilia..."
                 value={diseaseName}
                 onChange={(e) => setDiseaseName(e.target.value)}
-                className="w-full"
+                className="w-full text-xs"
               />
             </div>
 
             <div>
-              <label className="text-orange-400 font-bold">Severidad Foliar</label>
+              <label className="text-amber-400 font-medium">Severidad Foliar</label>
               <select 
                 value={diseaseSeverity}
                 onChange={(e) => setDiseaseSeverity(e.target.value)}
@@ -155,8 +155,8 @@ export default function ClimateSanityModule({ records, setRecords }) {
               </select>
             </div>
 
-            <button type="submit" className="btn-navi btn-navi-green w-full justify-center h-[40px] mt-2">
-              <PlusCircle className="w-4 h-4" /> REGISTRAR CLIMA
+            <button type="submit" className="btn-navi btn-navi-green w-full justify-center h-[38px] mt-2 font-bold">
+              <PlusCircle className="w-4 h-4" /> REGISTRAR DATO CLIMÁTICO
             </button>
           </form>
         </div>
@@ -165,8 +165,8 @@ export default function ClimateSanityModule({ records, setRecords }) {
       {/* WINDOW 2 (Middle): Resumen de Métricas */}
       <div className="navi-window w-72 shrink-0">
         <div className="navi-window-header">
-          <span className="font-mono text-xs text-orange-400 flex items-center gap-1.5">
-            <Thermometer className="w-3.5 h-3.5 text-yellow-400" /> METEOROLOGICAL_SUMMARY.SYS
+          <span className="font-mono text-xs text-amber-400 flex items-center gap-1.5 font-semibold">
+            <Thermometer className="w-3.5 h-3.5 text-amber-400" /> RESUMEN_METEOROLÓGICO.SYS
           </span>
           <div className="navi-window-controls">
             <div className="navi-win-btn">_</div>
@@ -174,34 +174,34 @@ export default function ClimateSanityModule({ records, setRecords }) {
           </div>
         </div>
 
-        <div className="p-4 space-y-4">
-          <div className="navi-window p-3 flex items-center gap-3">
-            <div className="w-9 h-9 rounded bg-cyan-950 border border-cyan-400 flex items-center justify-center shrink-0">
-              <CloudRain className="w-5 h-5 text-cyan-400" />
+        <div className="p-4 space-y-3">
+          <div className="p-3 bg-gray-900 border border-gray-800 rounded flex items-center gap-3">
+            <div className="w-9 h-9 rounded bg-sky-950 border border-sky-400 flex items-center justify-center shrink-0">
+              <CloudRain className="w-5 h-5 text-sky-400" />
             </div>
             <div>
-              <span className="text-[10px] text-purple-300 block font-mono">LLUVIA TOTAL</span>
-              <span className="text-lg font-bold text-cyan-400">{totalRain} mm</span>
+              <span className="text-[10px] text-gray-400 block font-mono">LLUVIA ACUMULADA</span>
+              <span className="text-base font-bold text-sky-400">{totalRain} mm</span>
             </div>
           </div>
 
-          <div className="navi-window p-3 flex items-center gap-3">
-            <div className="w-9 h-9 rounded bg-orange-950 border border-orange-400 flex items-center justify-center shrink-0">
-              <Thermometer className="w-5 h-5 text-orange-400" />
+          <div className="p-3 bg-gray-900 border border-gray-800 rounded flex items-center gap-3">
+            <div className="w-9 h-9 rounded bg-amber-950 border border-amber-400 flex items-center justify-center shrink-0">
+              <Thermometer className="w-5 h-5 text-amber-400" />
             </div>
             <div>
-              <span className="text-[10px] text-purple-300 block font-mono">TEMP. PROMEDIO</span>
-              <span className="text-lg font-bold text-orange-400">{avgTempGlobal} °C</span>
+              <span className="text-[10px] text-gray-400 block font-mono">TEMP. PROMEDIO</span>
+              <span className="text-base font-bold text-amber-400">{avgTempGlobal} °C</span>
             </div>
           </div>
 
-          <div className="navi-window p-3 flex items-center gap-3">
-            <div className="w-9 h-9 rounded bg-yellow-950 border border-yellow-400 flex items-center justify-center shrink-0">
-              <AlertTriangle className="w-5 h-5 text-yellow-400" />
+          <div className="p-3 bg-gray-900 border border-gray-800 rounded flex items-center gap-3">
+            <div className="w-9 h-9 rounded bg-rose-950 border border-rose-400 flex items-center justify-center shrink-0">
+              <AlertTriangle className="w-5 h-5 text-rose-400" />
             </div>
             <div>
-              <span className="text-[10px] text-purple-300 block font-mono">ALERTAS FITOSANITARIAS</span>
-              <span className="text-lg font-bold text-yellow-400">{records.filter(r => r.diseaseName !== 'Sin síntomas visibles').length}</span>
+              <span className="text-[10px] text-gray-400 block font-mono">ALERTAS ENFERMEDAD</span>
+              <span className="text-base font-bold text-rose-400">{records.filter(r => r.diseaseName !== 'Sin síntomas visibles').length}</span>
             </div>
           </div>
         </div>
@@ -210,8 +210,8 @@ export default function ClimateSanityModule({ records, setRecords }) {
       {/* WINDOW 3 (Right): Matriz Histórica */}
       <div className="navi-window w-[520px] shrink-0">
         <div className="navi-window-header">
-          <span className="font-mono text-xs text-green-400 flex items-center gap-1.5">
-            <Calendar className="w-3.5 h-3.5 text-yellow-400" /> CLIMATE_MATRIX.GRID
+          <span className="font-mono text-xs text-emerald-400 flex items-center gap-1.5 font-semibold">
+            <Calendar className="w-3.5 h-3.5 text-emerald-400" /> HISTORIAL_CLIMÁTICO.GRID
           </span>
           <div className="navi-window-controls">
             <div className="navi-win-btn">_</div>
@@ -221,11 +221,11 @@ export default function ClimateSanityModule({ records, setRecords }) {
         </div>
 
         <div className="p-4">
-          <h3 className="text-xs font-bold text-yellow-400 mb-3">
+          <h3 className="text-xs font-bold text-gray-200 mb-3">
             HISTORIAL CLIMÁTICO Y FITOSANITARIO ({records.length})
           </h3>
 
-          <div className="overflow-x-auto border border-purple-800 h-[280px]">
+          <div className="overflow-x-auto border border-gray-700 h-[280px] rounded">
             <table className="grid-table">
               <thead>
                 <tr>
@@ -241,17 +241,17 @@ export default function ClimateSanityModule({ records, setRecords }) {
                 {records.length > 0 ? (
                   records.map((r) => (
                     <tr key={r.id}>
-                      <td className="text-xs font-mono text-purple-300">{r.date}</td>
-                      <td className="font-bold text-orange-400 text-xs">{r.tempAvg}°C</td>
-                      <td className="font-bold text-cyan-400 text-xs">{r.rainMm} mm</td>
-                      <td className="font-bold text-yellow-300 text-xs">{r.diseaseName}</td>
+                      <td className="text-xs font-mono text-gray-400">{r.date}</td>
+                      <td className="font-bold text-amber-400 text-xs">{r.tempAvg}°C</td>
+                      <td className="font-bold text-sky-400 text-xs">{r.rainMm} mm</td>
+                      <td className="font-semibold text-gray-200 text-xs">{r.diseaseName}</td>
                       <td>
-                        <span className="badge-navi text-orange-400 border-orange-400 text-[10px]">
+                        <span className="badge-navi text-amber-400 border-amber-400/60 text-[10px]">
                           {r.diseaseSeverity}
                         </span>
                       </td>
                       <td>
-                        <button onClick={() => handleDelete(r.id)} className="text-red-400 hover:text-red-300 p-1">
+                        <button onClick={() => handleDelete(r.id)} className="text-rose-400 hover:text-rose-300 p-1">
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </td>
@@ -259,7 +259,7 @@ export default function ClimateSanityModule({ records, setRecords }) {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="6" className="text-center py-6 text-purple-300 font-mono text-xs">
+                    <td colSpan="6" className="text-center py-8 text-gray-400 font-mono text-xs">
                       No hay datos climáticos registrados.
                     </td>
                   </tr>
